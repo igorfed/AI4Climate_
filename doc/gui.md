@@ -4,8 +4,15 @@
 
 This approach uses DCNN to detect flood waters on surveillance images seen from the perspective of cell phones. To demonstrate the approach, we trained the DCNN on **1948** flooding images collected from the Internet and manually labeled (CARLO) and applied it to ....
 
-To provide examples of dry ground, **xxx** images of urban klandscape without floodng was added from the Cityscapes dataset.
+To provide examples of dry ground, **xxx** images of urban landscape without flooding was added from the Cityscapes dataset.
+
 As input, the network takes color images with a resolution of 256 pixels × xxx pixels
+
+| Command | Arguments |Images | Annotation | Description |
+| ---| --- |--- |--- | --- |
+| ```./euflood.sh``` [here](../euflood.sh) | source, flooding, out| 252 images | eu2013.csv | Read original images and flooding annotation; rename the images and create new CSV-annotation file|
+
+
 
 | Command | Description |
 | ------------------------------------ | ------------------------------------- |
