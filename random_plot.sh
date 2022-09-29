@@ -1,6 +1,8 @@
 #!/bin/bash
-source='/media/igofed/SSD_1T/AI4CI/DATA/mydata/euflood2013/out/1'
-csv='/media/igofed/SSD_1T/AI4CI/DATA/mydata/euflood2013/out/eu2013.csv' 
+
+
+source='/home/igofed/LiU/AI4Climate_/temp_2022_09_28_20_14_02/image/'
+csv='/home/igofed/LiU/AI4Climate_/temp_2022_09_28_20_14_02/2022_09_28_20_14_02.csv' 
 echo 'Source Data Folder  :' $'\t' $source
 echo 'CSV filem           :' $'\t' $csv
-python3 src/eu_flood_2013/random_plot.py -source $source -csv $csv 
+python3 src/random_plot.py -source $source -csv $csv 

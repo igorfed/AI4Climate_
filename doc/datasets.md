@@ -1,8 +1,8 @@
-# Quick Start
+# Used Datasets
 
 ## Preparing the dataset
 
-This approach uses DCNN to detect flood waters on surveillance images seen from the perspective of cell phones. To demonstrate the approach, we trained the DCNN on **1948** flooding images collected from the Internet and manually labeled (CARLO) and applied it to ....
+This approach uses DCNN implementations to detect flood waters on surveillance images seen from the perspective of cell phones. To demonstrate the approach, we trained the DCNN on **1948** flooding images collected from the Internet and manually labeled (CARLO, carlo.navarra@liu.se) and applied it to ....
 
 To provide examples of dry ground, **xxx** images of urban landscape without flooding was added from the Cityscapes dataset.
 
@@ -21,7 +21,24 @@ As input, the network takes color images with a resolution of 256 pixels × xx
 | ```python3 random_file_selection.py -source [path to the dataset] -json [path to annotation files] -dest [output] -n [Number of randomly selected images]``` |Read Images and annotation from CityScape dataset (from images and labels)/ rename and create CSV|
 |```./euflood.sh``` [here](../euflood.sh) |Read all images from the specific folder and copy it with changed names into **0**, **1**, **full** folder; creating **csv** annotation file |
 
-### Flooded images from the EU flood dataset
+
+| Command | Description |
+| ------------------------------------ | ------------------------------------- |
+| ```python3 src/desktop_mobile/parser.py -source [path to the dataset] -out [path to the output folder]```  $^{1)}$ | Parser for Desktop and Mobile|
+|```python3 src/random_plot.py -source [path to parsed dataset] -csv [path to csv]```   $^{2)}$ | Random Plot of the images in sellected dataset|
+1)```python3 src/desktop_mobile/parser.py -source /media/igofed/SSD_1T/AI4CI/Carlo/desktop_old``` - if out not specified the result will be in the project folder
+2)```python3 src/desktop_mobile/parser.py -source /temp_2022_09_28_19_53_30/image -csv=/2022_09_28_19_53_30.csv```
+
+### 1. Flooded images from Carlo's dataset
+####1.1. Desktop
+
+<img src="random_plot_desktop.png" width="1000">
+####1.2. Mobile
+<img src="random_plot_mobile.png" width="1000">
+
+
+
+### 1. Flooded images from the EU flood dataset
 
 **'https://github.com/cvjena/eu-flood-dataset'** </br>
 ![Blank Diagram](random_plot_euflood.png)
@@ -37,9 +54,11 @@ All images has different resolution and has to be transformed before train.
 | ```python3 roadway_parser.py -source [path to the dataset]```                                                                                               | Read original images, rename and create CSV                                                       |
 | ```python3 random_file_selection.py -source [path to the dataset] -json [path to annotation files] -dest [output] -n [Number of randomly selected images]``` | Read Images and annotation from CityScape dataset (from images and labels)/ rename and create CSV |
 
+
+
 |Dataset     |Image_ID | TimeEvent | hasWater |lat |lon |Notes |
 |------------| :-- | :-- | :-- | :-- | :-- | ------------------------------------ |
-|desktop (1) |0000|1626213600000|1|50.4922 |5.8667|1948 (1904 / 44) frames in Desktop dataset (Carlo) |
+|desktop (1) |0000|1626213600000|1|50.4922 |5.8667|1947 (1904 / 43) frames in Desktop dataset (Carlo) |
 |...|...|...|...|...| ...      |
 |mobile (2) |0000|1614253405477|0|58.4059| 15.6012| 546 (327 / 219 )frames in Mobile dataset (Carlo)           |
 |...|...|...|...|...| ...      |

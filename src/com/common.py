@@ -87,11 +87,13 @@ def check_if_file_existed(filename):
 		print(COLOR.Red + f'filename \t: {filename} is not existed' + COLOR.END)
 
 
-def check_if_dir_existed(dir_name):
+def check_if_dir_existed(dir_name, create=False):
 
 	if not os.path.exists(dir_name):
-		print(COLOR.Red +
-			  f'folder \t\t: {dir_name} is not available' + COLOR.END)
+		print(COLOR.Red +f'folder \t\t: {dir_name} is not available' + COLOR.END)
+		if create:
+			os.mkdir(dir_name)
+			print(COLOR.Green + f'folder \t\t: {dir_name} created' + COLOR.END)	
 	else:
 		print(COLOR.BBlue + f'folder \t\t: {dir_name} is available' + COLOR.END)
 
@@ -234,7 +236,7 @@ class DESKTOP():
 
 	def __init__(self, source, dest):
 		t = COLOR.Green + 80 * '=' + COLOR.END
-		self.valid_img = [".jpg", "jpeg"]
+		self.valid_img = [".jpg", "jpeg", ".png"]
 		print(t)
 		"""
 		root_dir is the path to dataset
@@ -273,7 +275,7 @@ class DESKTOP():
 		try:
 			f = open(fname)
 		except IOError:
-			print(f'fname{fname}File not accessible')
+			print(COLOR.Red + f'fname{fname}File not accessible' + COLOR.END)
 		finally:
 			f.close()
 		image = io.imread(fname)
@@ -362,68 +364,115 @@ def extract_exif(path, csv_name):
 		csv_file.close()
 		print("CSV Done", csv_name)
 
-#path= "/media/igofed/SSD_1T/AI4CI/Carlo/roadway/Dataset/images/"
+#path= "/media/igofed/SSD_1T/AI4CI/Carl			o/roadway/Dataset/images/"
 #csv_name= "/media/igofed/SSD_1T/AI4CI/Carlo/roadway/Dataset/roadway.csv"
 #print(extract_exif(path, csv_name))
 
 
 def read_csv(i, csv_file):
 	landmarks_frame = pd.read_csv(csv_file)
+	img_name = landmarks_frame.iloc[i,0]
 	img_id = landmarks_frame.iloc[i,1]
 	img_TimeEvent = landmarks_frame.iloc[i,2]
-	img_lat, img_lon = landmarks_frame.iloc[i,3], landmarks_frame.iloc[i,4]
-	img_hasWater = landmarks_frame.iloc[i,5]
-	return img_TimeEvent, img_id, img_hasWater, img_lat, img_lon
+	img_hasWater = landmarks_frame.iloc[i,3]
+	img_lat, img_lon = landmarks_frame.iloc[i,4], landmarks_frame.iloc[i,5]
+
+	return img_name, img_TimeEvent, img_id, img_hasWater, img_lat, img_lon
 
 
 class DATA_PLOT:
-    def __init__(self):
-        self.valid_img = [".jpg", "png"]
-        self.fname = []
+	def __init__(self, path, csv_file):
+		self.valid_img = [".jpg", "png"]
+		self.fname = []
+		# frames with a water 
+		self.fname_y = []
+		# frames with no water 
+		self.fname_n = []
+		self.i_y = []
+		self.i_n = []
+		self.files2list(path, csv_file)
 
-    def files2list(self, path):
-        self.path = path
-        for i, fname in enumerate(os.listdir(path)):
-            fname = os.path.join(path, fname)
-            print(i, fname)
-            #if os.path.splitext(fname)[-1].lower() not in self.valid_img:
-            #    continue
-            self.fname.append(fname)
+	def files2list(self, path, csv_file):
+		self.path = path
+		for i, fname in enumerate(os.listdir(path)):
+			fname = os.path.join(path, fname)
+			_, _, _, img_hasWater, _, _ = read_csv(i, csv_file)
+			r = f'Has Water: {img_hasWater}'
+			#print(i, fname, r)
+			if img_hasWater==1: 
+				self.fname_y.append(fname)
+				self.i_y.append(i)
+			else:
+				self.fname_n.append(fname)
+				self.i_n.append(i)
+		print('Frames with no water: {}'.format(len(self.fname_n)))
+		print()
+		print('Frames with    water: {}'.format(len(self.fname_y)))
 
-        print(len(self.fname))
+	def random_plot(self, csv_file, plot = True):
+		def metadata(fname):
+			frame = Image.open(fname)
+			#exifdata = frame.getexif()
+			#for tag_id in exifdata:
+			#    tag = TAGS.get(tag_id, tag_id)
+			#    data = exifdata.get(tag_id)
+				#if isinstance(data, bytes):
+				#    data = data.decode()
+				#print(f"{tag:25}: {data}")
 
-    def random_plot(self, csv_file, plot = True):
-        def metadata(fname):
-            frame = Image.open(fname)
-            #exifdata = frame.getexif()
-            #for tag_id in exifdata:
-            #    tag = TAGS.get(tag_id, tag_id)
-            #    data = exifdata.get(tag_id)
-                #if isinstance(data, bytes):
-                #    data = data.decode()
-                #print(f"{tag:25}: {data}")
-
-            return frame
+			return frame
 
 
-        if plot:
-            print( len(self.fname))                
-            fig = plt.figure(str(len(self.fname)) + " images found in" + self.path, figsize=(30, 30), dpi=80)
-            for i in range(9):
-                import random
-                r = random.randint(0,len(self.fname))
-                img_TimeEvent, img_id, img_hasWater, img_lat, img_lon = read_csv(r,csv_file)
-                ax = fig.add_subplot(3, 3, i + 1)
-                frame = metadata(fname=self.fname[r])
-                head, tail = os.path.split(self.fname[r])
-                width, height = frame.size
-                #print(width, height)
-                ax.imshow(frame)
-                r = f'ID:{img_id}, Water:{img_hasWater}, w:{width}, h{height}'
-                if img_hasWater:
-                    ax.set_title(r, fontsize=12, color='red')
-                else:
-                    ax.set_title(r, fontsize=12, color='green')
-                ax.set_aspect('equal')
-            plt.show()
-            #fig.savefig("desktop.pdf")
+		if plot:
+			print( len(self.fname))                
+			fig = plt.figure(str(len(self.fname)) + " images found in" + self.path, dpi=80, figsize=(18, 10)) #
+			water = 0
+			for i in range(6):
+				ax = fig.add_subplot(2, 3, i + 1)
+				import random
+
+				if water <3:
+					r = self.i_y[random.randint(0,len(self.i_y))]
+					img_name, _, img_id, img_hasWater, _, _ = read_csv(r,csv_file)
+					#print(COLOR.Red + fname + COLOR.END)					
+				else:
+					r = self.i_n[random.randint(0,len(self.i_n))]
+					img_name, _, img_id, img_hasWater, _, _ = read_csv(r,csv_file)
+					#print(COLOR.Green + fname + COLOR.END)					
+				
+				fname = os.path.join(self.path,f'{img_name}_{img_id:04d}_{img_hasWater}.png')
+				frame = metadata(fname=fname)
+				width, height = frame.size
+				s = f'ID: {img_id}, Has Water: {img_hasWater}, W: {width}, H: {height}'
+				ax.imshow(frame)
+				#r = f'ID: {img_id}, Has Water: {img_hasWater}, w: {width}, h {height}'
+				if water <3:
+					ax.set_title(s, fontsize=11, color='red')
+				else:
+					ax.set_title(s, fontsize=11, color='green')
+				ax.set_aspect('equal')
+				plt.tight_layout()
+				plt.subplots_adjust(wspace=0, hspace=0)				
+				water=water+1
+			plt.show()
+			#fig.savefig("desktop.pdf")
+
+
+def arg_parser():
+	import argparse
+	parser = argparse.ArgumentParser(description = 'This is a random selection of images program')
+	parser.add_argument('-source', '--source', required=False, type=str, help='Source of images')
+	parser.add_argument('-dest', '--dest', required=False, type=str, help='Destination of images')
+
+	return parser.parse_args()
+
+class CSV:
+	dict = {}
+	name = []
+	id = []
+	hasWater = []
+	TimeEvent = []
+	lat = []
+	lon = []
+	
+
