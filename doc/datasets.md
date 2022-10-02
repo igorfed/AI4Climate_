@@ -35,6 +35,7 @@ To provide more tests in CNN tuning we used **1549**  eu flooding Image dataset.
 |...|...|...|...|...|...|...|...| ... | ...|
 |bonn |0000 |1652951033000 |0|52.4955| 13.3086| 0|100| 100| randomly selected frames in Berlin without flooding $^{8)}$  |
 |...|...|...|...|...|...|4113|770| 4883 | in Total
+</br>
 (1) **Desktop dataset (Carlo)**</br>
 1947 annotated desktop flood images
 ```python3 src/main_parser -source /media/igofed/SSD_1T/AI4CI/Carlo/desktop_old -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/ -type desktop```
