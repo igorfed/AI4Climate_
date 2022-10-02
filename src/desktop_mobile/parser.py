@@ -31,9 +31,9 @@ if __name__ == '__main__':
 	dest_images = os.path.join(dest,'image')
 	check_if_dir_existed(dest_images, True)
 	csv_name = os.path.join(dest, time+".csv")
-	
 	## Read original desktop or mobile dataset
 	__dataset = DESKTOP(source = args.source, dest = dest_images)
+	
 	__csv = CSV
 	for i in range(len(__dataset)):  
 		sample = __dataset[i]

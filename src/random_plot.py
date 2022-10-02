@@ -3,7 +3,9 @@ from importlib.resources import path
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from com.common import *
+from com.common_packages import check_if_dir_existed
+from com.common_packages import check_if_file_existed
+from com.common_packages import DATA_PLOT
 import json
 from PIL import Image
 import matplotlib.pyplot as plt

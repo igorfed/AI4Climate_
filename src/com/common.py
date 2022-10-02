@@ -234,7 +234,7 @@ def random_selection(source_img, sourse_json, dest, no_of_files):
 
 class DESKTOP():
 
-	def __init__(self, source, dest):
+	def __init__(self, source, dest, type):
 		t = COLOR.Green + 80 * '=' + COLOR.END
 		self.valid_img = [".jpg", "jpeg", ".png"]
 		print(t)
@@ -242,6 +242,7 @@ class DESKTOP():
 		root_dir is the path to dataset
 		output is the output dir for renamed images
 		"""
+		self.type = type
 		self.source_dir = source
 		self.dest_dir = dest
 		self.files2list()
@@ -270,8 +271,16 @@ class DESKTOP():
 			lon = format(float(fname.split('_')[4]), ".4f")
 			return name, hasWater, TimeEvent, lat, lon
 
+		def image_name_roadway(fname):
+			"image_0.png"
+			stat = os.stat(fname)
+			TimeEvent = int(stat.st_mtime)*1000 +idx
+			lat = '12.3456'
+			lon = '78.9012'
+			return "roadway", 1,  TimeEvent, lat, lon
+
 		fname = self.fname[idx]
-		name, extension =  os.path.splitext(fname)
+		name, _ =  os.path.splitext(fname)
 		try:
 			f = open(fname)
 		except IOError:
@@ -280,9 +289,18 @@ class DESKTOP():
 			f.close()
 		image = io.imread(fname)
 		print(idx,fname)
-		landmarks = np.array(image_name(os.path.basename(name)))
-		landmarks = landmarks.reshape(-1, 5)
-		sample = {'image': image, 'landmarks': landmarks}
+		
+		if self.type =="desktop" or self.type == "mobile":
+		
+			landmarks = np.array(image_name(os.path.basename(name)))
+			landmarks = landmarks.reshape(-1, 5)
+			sample = {'image': image, 'landmarks': landmarks}
+		
+		elif self.type =="roadway":
+			landmarks = np.array(image_name_roadway(fname))
+			landmarks = landmarks.reshape(-1, 5)
+			sample = {'image': image, 'landmarks': landmarks}	
+
 		return sample
 
 	def imageCopy2Dest(self, sample, i):
@@ -313,8 +331,7 @@ class DESKTOP():
 
 
 
-	def writeCSV(self):
-		import csv
+		
 
 
 def extract_exif(path, csv_name):
@@ -422,7 +439,6 @@ class DATA_PLOT:
 
 			return frame
 
-
 		if plot:
 			print( len(self.fname))                
 			fig = plt.figure(str(len(self.fname)) + " images found in" + self.path, dpi=80, figsize=(18, 10)) #
@@ -456,6 +472,7 @@ class DATA_PLOT:
 				water=water+1
 			plt.show()
 			#fig.savefig("desktop.pdf")
+	
 
 
 def arg_parser():
