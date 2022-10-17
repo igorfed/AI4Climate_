@@ -1,0 +1,8 @@
+/media/igofed/SSD_1T/AI4CI/FULLDATASET/desktop
+/media/igofed/SSD_1T/AI4CI/FULLDATASET/mobile
+/media/igofed/SSD_1T/AI4CI/FULLDATASET/roadway
+/media/igofed/SSD_1T/AI4CI/FULLDATASET/eu2013
+/media/igofed/SSD_1T/AI4CI/FULLDATASET/berlin
+/media/igofed/SSD_1T/AI4CI/FULLDATASET/zurich
+/media/igofed/SSD_1T/AI4CI/FULLDATASET/mainz
+/media/igofed/SSD_1T/AI4CI/FULLDATASET/munich

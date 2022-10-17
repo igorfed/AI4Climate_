@@ -53,7 +53,7 @@ if __name__ == '__main__':
 	lst = range(0,len(__dataset)-1)
 	print(lst, len(lst))
 	import random
-	lst =  random.choices(lst, k = int(args.n))
+	lst =  random.sample(lst, k = int(args.n))
 	print('lst', lst, len(lst))
 	
 	for i in range(len(lst)):

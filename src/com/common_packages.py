@@ -26,6 +26,7 @@ def arg_parser_eu():
     return parser.parse_args()
 
 
+
 def check_if_file_existed(filename):
 	if os.path.isfile(filename):
 		print(COLOR.Blue + f'filename \t: {filename} existed' + COLOR.END)
@@ -127,7 +128,7 @@ class DATASETS():
 			landmarks = np.array(image_name(os.path.basename(name)))
 		elif self.type =="roadway":
 			landmarks = np.array(image_name_roadway(fname))
-		elif self.type in ["berlin", "bonn", "munich","mainz" ]:
+		elif self.type in ["berlin", "bonn", "munich","mainz", "zurich" ]:
 			landmarks = np.array(image_name_cityscape(fname, self.type))
 		else:
 			print(COLOR.Red + "User set-up a wrong argument in type" + COLOR.END)	
@@ -201,6 +202,12 @@ class DATA_PLOT:
 		print('Frames with no water: {}'.format(len(self.fname_n)))
 		print()
 		print('Frames with    water: {}'.format(len(self.fname_y)))
+
+	def random_selection_train():
+		
+		pass
+
+
 
 	def random_plot(self, csv_file, plot = True):
 		def metadata(fname):

@@ -2,7 +2,7 @@
 
 ## Preparing the dataset
 
-This approach uses DCNN implementations to detect flood waters on surveillance images seen from the perspective of cell phones. To demonstrate the approach, we trained the DCNN on **1947** flooding images collected from the Internet and manually labeled (CARLO, carlo.navarra@liu.se) and applied it to ....
+This approach uses DCNN implementations to detect flood waters on surveillance images seen from the perspective of cell phones. To demonstrate the approach, we trained the DCNN on **1947** flooding images collected from the Internet and manually labeled (CARLO,  https://liu.se/en/research/ai4climateadaptation) and applied it to ....
 
 To provide examples of dry ground, **400** images of urban landscape without flooding was added from the Cityscapes dataset (in Berlin, Munich, Mainz and Bonn cities).
 To provide more tests in CNN tuning we used **441** roadway flooding dataset.</br>
