@@ -244,6 +244,6 @@ if __name__ == '__main__':
     print(dest)
     dest= destination_path(dest=None)
     check_if_dir_existed(dest,True)
-    __train = DATA_to_TEST_VAL_TRAIN(root_dir, csv_file, dest, percentage=0.8, full=True)
+    #__train = DATA_to_TEST_VAL_TRAIN(root_dir, csv_file, dest, percentage=0.8, full=True)
 
     print('done')
