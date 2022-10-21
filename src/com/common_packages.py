@@ -7,6 +7,7 @@ from skimage import io, transform
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import cv2
 
 def arg_parser():
 	parser = argparse.ArgumentParser(description = 'This is a random selection of images program')
@@ -123,6 +124,9 @@ class DATASETS():
 		image = Image.open(fname).convert('RGB')
 		image.verify()
 		image = np.asarray(image)
+		#image[0] = (image[0] - np.min(image[0])) / (np.max(image[0]) - np.min(image[0]))
+		#image[1] = (image[1] - np.min(image[1])) / (np.max(image[1]) - np.min(image[1]))
+		#image[2] = (image[2] - np.min(image[2])) / (np.max(image[2]) - np.min(image[2]))
 
 		if self.type in ["desktop", "mobile"]:
 			landmarks = np.array(image_name(os.path.basename(name)))
@@ -135,6 +139,7 @@ class DATASETS():
 			exit
 		
 		landmarks = landmarks.reshape(-1, 5)
+		
 		sample = {'image': image, 'landmarks': landmarks}
 		#print(idx, fname, image.size, image.shape, type(image))
 		print(COLOR.Green,'ID\t: {} in {}'.format(idx, len(self.fname)))
@@ -153,11 +158,31 @@ class DATASETS():
 			lon = sample['landmarks'][0][4]
 			#return f'{name}_{hasWater}_{TimeEvent}_{lat}_{lon}.png'
 			return f'{name}_{i:04n}_{hasWater}.png'
+
 		def new_image_crop(image):
 			"ATTENTION - it is important to crop Cutyscape dataset" 
-			w, h = image.size
-			bottom = int(h*0.75)
-			return image.crop((0,0,w,bottom))
+			def center(image):
+				w, h = image.size
+				cw = int(w/2)
+				ch = int(h/2)
+				return cw, ch
+
+
+			
+			cw, ch = center(image)
+			left = cw - int(1024/2)
+			top = ch -int(768/2)-128
+			right = cw + int(1024/2)
+			bottom = ch +int(768/2)-128
+			print(image.size)
+			#left = 0 
+			#upper = 0 
+			#right = w
+			#lower = bottom
+			#left, upper, right, lower
+			image = image.crop((left, top, right, bottom))
+			image = image.resize((640, 480))
+			return image
 
 		image = Image.fromarray(sample['image'])
 		image = new_image_crop(image)

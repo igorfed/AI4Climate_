@@ -10,6 +10,7 @@ from com.common_packages import getCurrentTime
 from com.common_packages import DATASETS
 from com.com_csv import CSV
 from com.colors import COLOR
+import numpy as np
 '''
 This is a program to parse data images:
 Desktop -> image folder_0 + csv annotation
@@ -34,6 +35,10 @@ This is a program to parse data images from Roadway Dataset
 and creates a new directory with updated csvfile
 '''
 
+def duplicates(numbers):
+	duplicates = [number for number in numbers if numbers.count(number) > 1]
+	return list(set(duplicates))
+
 if __name__ == '__main__':
 
 	args = arg_parser()
@@ -50,9 +55,16 @@ if __name__ == '__main__':
 	__dataset = DATASETS(source = args.source, dest = dest_images, type = args.type)
 	__csv = CSV
 	#print(len(__dataset))
+	#for i in range(len(__dataset)):
+	W, H = [], []
 	for i in range(len(__dataset)):
+
 		sample = __dataset[i]
-		
+		img = sample['image']
+		(height, width, channel)=img.shape
+		W.append(width)
+		H.append(height)
+		#print(f'h: {height}, wight: {width}')
 		__dataset.imageCopy2Dest(sample, i)
 		##------------------------##
 		__csv.name.append(sample['landmarks'][0][0])
@@ -68,6 +80,11 @@ if __name__ == '__main__':
 		__csv.dict["lat"] = __csv.lat
 		__csv.dict["lon"] = __csv.lon
 	print(COLOR.BBlue)
+	print('W', np.max(duplicates(W)))
+	print('H', np.max(duplicates(H)))
+	#my_dict = {i:H.count(i) for i in H}
+
+	#print('dict H', H)
 	print('Has No Water Flooding: {}'.format(__csv.hasWater.count(0)))
 	print('Has    Water Flooding: {}'.format(__csv.hasWater.count(1)))
 	print('In Total             : {}'.format(len(__csv.hasWater)), COLOR.END)

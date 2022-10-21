@@ -29,15 +29,16 @@ To provide more tests in CNN tuning we used **1549**  eu flooding Image dataset.
 |...|...|...|...|...|...|...|...| ... | ...|
 |berlin |0000 |1652951033000 |0|52.4955| 13.3086| 0|100| 100| randomly selected frames in Berlin without flooding $^{5)}$  |
 |...|...|...|...|...|...|...|...| ... | ...|
-|munich |0000 |1652951033000 |0|52.4955| 13.3086| 0|100| 100| randomly selected frames in Berlin without flooding $^{6)}$  |
+|munich |0000 |1652951033000 |0|52.4955| 13.3086| 0|100| 100| randomly selected frames in Munich without flooding $^{6)}$  |
 |...|...|...|...|...|...|...|...| ... | ...|
-|mainz |0000 |1652951033000 |0|52.4955| 13.3086| 0|100| 100| randomly selected frames in Berlin without flooding $^{7)}$  |
+|mainz |0000 |1652951033000 |0|52.4955| 13.3086| 0|100| 100| randomly selected frames in Mainz without flooding $^{7)}$  |
 |...|...|...|...|...|...|...|...| ... | ...|
-|bonn |0000 |1652951033000 |0|52.4955| 13.3086| 0|100| 100| randomly selected frames in Berlin without flooding $^{8)}$  |
+|bonn |0000 |1652951033000 |0|52.4955| 13.3086| 0|100| 100| randomly selected frames in Zurich without flooding $^{8)}$  |
 |...|...|...|...|...|...|4113|770| 4883 | in Total
 </br>
 (1) **Desktop dataset (Carlo)**</br>
 1947 annotated desktop flood images
+
 ```python3 src/main_parser -source /media/igofed/SSD_1T/AI4CI/Carlo/desktop_old -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/ -type desktop```
 ```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/desktop/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/desktop/annotation.csv```
 
@@ -45,14 +46,14 @@ To provide more tests in CNN tuning we used **1549**  eu flooding Image dataset.
 
 (2) **Mobile dataset (Carlo)**</br>
 546 annotated mobile flood images
-```python3 src/main_parser -source /media/igofed/SSD_1T/AI4CI/Carlo/mobile -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/ -type mobile```
+```python3 src/main_parser.py -source /media/igofed/SSD_1T/AI4CI/Carlo/mobile -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/ -type mobile```
 ```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/mobile/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/mobile/annotation.csv```
 
 <img src="random_plot_mobile.png" width="700">
 
 (3) **'https://www.kaggle.com/datasets/saurabhshahane/roadway-flooding-image-dataset'** </br> This dataset consists of 441 annotated roadway flood images that can be used as training samples to train computer vision based flood detection algorithms. </br>
 ```python3 src/main_parser.py -source /media/igofed/SSD_1T/AI4CI/DATA/roadway/images/ -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/ -type "roadway"```
-```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/mobile/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/mobile/annotation.csv```
+```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/roadway/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/roadway/annotation.csv```
 <img src="random_plot_roadway.png" width="900">
 
 (4) **Flooded images from the EU flood dataset 'https://github.com/cvjena/eu-flood-dataset'** </br>
@@ -63,24 +64,31 @@ To provide more tests in CNN tuning we used **1549**  eu flooding Image dataset.
 
 (5) **CityScape Dataset (Berlin)**</br>
 100 annotated no-flood images
-```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/leftImg8bit/test/berlin -n 100 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/berlin -type berlin```
+```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/CityScape/berlin -n 100 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/berlin -type "berlin"```
 ```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/berlin/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/berlin/annotation.csv```
-<img src="random_plot_berlin.png" width="1000">
+
+<img src="random_plot_berlin.png" width="900">
 
 (6) **CityScape Dataset (Munich)**</br>
 100 annotated no-flood images
-```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/leftImg8bit/test/munich -n 100 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/munich -type munich```
+
+```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/CityScape/munich -n 100 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/munich -type "munich"```
+
 ```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/munich/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/munich/annotation.csv```
-<img src="random_plot_munich.png" width="1000">
+
+<img src="random_plot_munich.png" width="900">
 
 (7) **CityScape Dataset (Mainz)**</br>
 100 annotated no-flood images
-```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/leftImg8bit/test/mainz -n 100 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/mainz -type mainz```
+```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/CityScape/mainz -n 100 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/mainz -type "mainz"```
 ```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/mainz/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/mainz/annotation.csv```
-<img src="random_plot_mainz.png" width="1000">
 
-(8) **CityScape Dataset (Bonn)**</br>
+<img src="random_plot_mainz.png" width="900">
+
+
+(8) **CityScape Dataset (Zurich)**</br>
 100 annotated no-flood images
-```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/leftImg8bit/test/bonn -n 100 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/bonn -type bonn```
-```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/bonn/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/bonn/annotation.csv```
-<img src="random_plot_bonn.png" width="1000">
+```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/CityScape/zurich -n 100 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/zurich -type "zurich"```
+
+```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/zurich/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/zurich/annotation.csv```
+<img src="random_plot_zurich.png" width="900">
