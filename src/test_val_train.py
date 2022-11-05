@@ -61,7 +61,7 @@ def bubbleSort(arr):
 
 class DATA_to_TEST_VAL_TRAIN:
 	
-    def __init__(self, path, csv_file, dest, percentage=0.8, full=True):
+    def __init__(self, path, csv_file, dest, percentage=0.8, full=True, dataset_num=4):
         '''path - path to the images and csv'
         '''
         #self.path = path
@@ -85,6 +85,7 @@ class DATA_to_TEST_VAL_TRAIN:
         self.dest_valid = os.path.join(self.dest, 'valid')
         
         self.dest_train = os.path.join(self.dest, 'train')
+        self.dateset_num = dataset_num
         check_if_dir_existed(self.dest_test,True)
         check_if_dir_existed(self.dest_valid,True)
         check_if_dir_existed(self.dest_train,True)
@@ -122,7 +123,7 @@ class DATA_to_TEST_VAL_TRAIN:
         def check_dublicated_values(lst):
             set_lst = set(lst)
             contains_duplicates = len(lst) != len(set_lst)
-            #print('dublicates ', contains_duplicates)
+            print('dublicates ', contains_duplicates)
 
         length_train = int(len(list_total)*self.percentage)
         length_valid = int((len(list_total) - length_train)/2)
@@ -132,9 +133,9 @@ class DATA_to_TEST_VAL_TRAIN:
         
         #print(f'Total images {len(N)} \t{self.percentage*100} %')
         #print(f'Total images {len(N)} \t{self.percentage*100} %')
-        #print('train :\t', length_train, ', percentage :\t', self.percentage)
-        #print('val   :\t', length_valid)
-        #print('test  :\t', length_test)
+        print('train :\t', length_train, ', percentage :\t', self.percentage)
+        print('val   :\t', length_valid)
+        print('test  :\t', length_test)
 
 
         
@@ -176,9 +177,9 @@ class DATA_to_TEST_VAL_TRAIN:
     def files2list(self):
         ################################
         def read_csv(i, df):
-            img_name = df.iloc[i,1]
-            img_id = df.iloc[i,2]
-            img_hasWater = df.iloc[i,4]
+            img_name = df.iloc[i,0]
+            img_id = df.iloc[i,1]
+            img_hasWater = df.iloc[i,3]
             r = f'{img_name}_{img_id:04d}_{img_hasWater}.png'
             return img_name, img_hasWater, r
 
@@ -192,58 +193,44 @@ class DATA_to_TEST_VAL_TRAIN:
             finally:
                 f.close()
         
-    
-        print()
+        def classes(i, img_hasWater, list, dest, image_name):
+            if i in list:
+                if img_hasWater==0: 
+                    label_path = os.path.join(dest, 'Class0')
+                    check_if_dir_existed(label_path, True)
+                
+                if img_hasWater==1: 
+                    label_path = os.path.join(dest, 'Class1')
+                    check_if_dir_existed(label_path, True)
+
+                image.save(os.path.join(label_path, image_name))    
+
         for i, fname in enumerate(os.listdir(self.image_path)):
             img_name, img_hasWater, image_name = read_csv(i, self.df)
+            print('image_name: ', image_name)
             r = os.path.join(self.image_path, fname)
             image = Image.open(r).convert('RGB')
             image.verify()
-            if i in self.list_train:
-                if img_hasWater==0: 
-                    label_path = os.path.join(self.dest_train, 'Class0')
-                    check_if_dir_existed(label_path, True)
-                
-                
-                if img_hasWater==1: 
-                    label_path = os.path.join(self.dest_train, 'Class1')
-                    check_if_dir_existed(label_path, True)
-
-            if i in self.list_test:
-                if img_hasWater==0: 
-                    label_path = os.path.join(self.dest_test, 'Class0')
-                    check_if_dir_existed(label_path, True)
-                
-                
-                if img_hasWater==1: 
-                    label_path = os.path.join(self.dest_test, 'Class1')
-                    check_if_dir_existed(label_path, True)
-
-            if i in self.list_valid:
-                if img_hasWater==0: 
-                    label_path = os.path.join(self.dest_valid, 'Class0')
-                    check_if_dir_existed(label_path, True)
-                
-                
-                if img_hasWater==1: 
-                    label_path = os.path.join(self.dest_valid, 'Class1')
-                    check_if_dir_existed(label_path, True)
+            classes(i, img_hasWater, self.list_train, self.dest_train, image_name)
+            classes(i, img_hasWater, self.list_test, self.dest_test, image_name)
+            classes(i, img_hasWater, self.list_valid, self.dest_valid, image_name)
 
 
-            image.save(os.path.join(label_path, image_name))
-            print(i, os.path.join(self.image_path))
+
+
 
 
 
 if __name__ == '__main__':
 
-    root_dir = '/media/igofed/SSD_1T/AI4CI/FULLDATASET/FULLDATASET'
+    root_dir = '/media/igofed/SSD_1T/AI4CI/FULLDATASET/FULLDATASET3'
     csv_file = "annotation.csv"
     time = getCurrentTime()
     dest = os.path.join((Path(__file__).parent.parent), 'weather')
     print(dest)
     dest= destination_path(dest=None)
     check_if_dir_existed(dest,True)
-    #__train = DATA_to_TEST_VAL_TRAIN(root_dir, csv_file, dest, percentage=0.8, full=True)
+    dataset_num = 3
+    __train = DATA_to_TEST_VAL_TRAIN(root_dir, csv_file, dest, percentage=0.8, full=True, dataset_num = dataset_num)
 
     print('done')

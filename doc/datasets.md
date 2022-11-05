@@ -19,27 +19,27 @@ To provide more tests in CNN tuning we used **1549**  eu flooding Image dataset.
 
 |Dataset     |Image_ID | TimeEvent | hasWater |lat |lon | Flood Images | No-Flood Images | Total |Notes |
 |------------| :-- | :-- | :-- | :-- | :-- |:-- |:-- |:-- | ------------------------------------ |
-|desktop |0000|1626213600000|1|50.4922 |5.8667|1904|43|1947|Desktop dataset (Carlo)$^{1)}$ |
+|desktop |0000|1626213600000|1|50.4922 |5.8667|1907|40|1947|Desktop dataset (Carlo)$^{1)}$ |
 |...|...|...|...|...|...|...|...| ... | ...|
 |mobile |0000|1614253405477|0|58.4059| 15.6012| 219 |327 | 546 | Mobile dataset (Carlo)$^{2)}$ |
 |...|...|...|...|...|...|...|...| ... | ...|
 |roadway |0000|1652968461000| 1| 12.3456| 78.9012| 441 | 0| 441|Roadway Flooding Image Dataset $^{3)}$ |
 |...|...|...|...|...|...|...|...| ... | ...|
-|eu2013 |0000|1664719834000| 1| 12.3456| 78.9012| 1549 | 0| 1549|EU Flooding 2013 Dataset $^{4)}$ |
+|eu2013 |0000|1664719834000| 1| 12.3456| 78.9012| 1549 | 313| 1862|EU Flooding 2013 Dataset $^{4)}$ |
 |...|...|...|...|...|...|...|...| ... | ...|
-|berlin |0000 |1652951033000 |0|52.4955| 13.3086| 0|100| 100| randomly selected frames in Berlin without flooding $^{5)}$  |
+|berlin |0000 |1652951033000 |0|52.4955| 13.3086| 0|300| 300| randomly selected frames in Berlin without flooding $^{5)}$  |
 |...|...|...|...|...|...|...|...| ... | ...|
-|munich |0000 |1652951033000 |0|52.4955| 13.3086| 0|100| 100| randomly selected frames in Munich without flooding $^{6)}$  |
+|munich |0000 |1652951033000 |0|52.4955| 13.3086| 0|200| 200| randomly selected frames in Munich without flooding $^{6)}$  |
 |...|...|...|...|...|...|...|...| ... | ...|
-|mainz |0000 |1652951033000 |0|52.4955| 13.3086| 0|100| 100| randomly selected frames in Mainz without flooding $^{7)}$  |
+|mainz |0000 |1652951033000 |0|52.4955| 13.3086| 0|150| 150| randomly selected frames in Mainz without flooding $^{7)}$  |
 |...|...|...|...|...|...|...|...| ... | ...|
 |bonn |0000 |1652951033000 |0|52.4955| 13.3086| 0|100| 100| randomly selected frames in Zurich without flooding $^{8)}$  |
-|...|...|...|...|...|...|4113|770| 4883 | in Total
+|...|...|...|...|...|...|4116|1430| 5546 | in Total
 </br>
 (1) **Desktop dataset (Carlo)**</br>
 1947 annotated desktop flood images
 
-```python3 src/main_parser -source /media/igofed/SSD_1T/AI4CI/Carlo/desktop_old -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/ -type desktop```
+```python3 src/main_parser.py -source /media/igofed/SSD_1T/AI4CI/Carlo/desktop_old -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/ -type desktop```
 ```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/desktop/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/desktop/annotation.csv```
 
 <img src="random_plot_desktop.png" width="900">
@@ -57,30 +57,30 @@ To provide more tests in CNN tuning we used **1549**  eu flooding Image dataset.
 <img src="random_plot_roadway.png" width="900">
 
 (4) **Flooded images from the EU flood dataset 'https://github.com/cvjena/eu-flood-dataset'** </br>
-1549 annotated roadway flood images
+1862 annotated roadway flood images
 ```python3 src/euflood_parser.py -source /media/igofed/SSD_1T/AI4CI/EUFlood2013Dataset/european-flood-2013_imgs_small/imgs_small -flooding /media/igofed/SSD_1T/AI4CI/EUFlood2013Dataset/eu-flood-dataset/relevance/depth.txt  -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET```
 
 <img src="random_plot_euflood.png" width="900">
 
 (5) **CityScape Dataset (Berlin)**</br>
-100 annotated no-flood images
-```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/CityScape/berlin -n 100 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/berlin -type "berlin"```
+300 annotated no-flood images
+```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/CityScape/berlin -n 300 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/berlin -type "berlin"```
 ```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/berlin/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/berlin/annotation.csv```
 
 <img src="random_plot_berlin.png" width="900">
 
 (6) **CityScape Dataset (Munich)**</br>
-100 annotated no-flood images
+200 annotated no-flood images
 
-```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/CityScape/munich -n 100 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/munich -type "munich"```
+```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/CityScape/munich -n 200 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/munich -type "munich"```
 
 ```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/munich/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/munich/annotation.csv```
 
 <img src="random_plot_munich.png" width="900">
 
 (7) **CityScape Dataset (Mainz)**</br>
-100 annotated no-flood images
-```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/CityScape/mainz -n 100 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/mainz -type "mainz"```
+150 annotated no-flood images
+```python3 src/random_file_selection.py -source /media/igofed/SSD_1T/AI4CI/CityScape/mainz -n 150 -dest /media/igofed/SSD_1T/AI4CI/FULLDATASET/mainz -type "mainz"```
 ```python3 src/random_plot.py -source /media/igofed/SSD_1T/AI4CI/FULLDATASET/mainz/image -csv /media/igofed/SSD_1T/AI4CI/FULLDATASET/mainz/annotation.csv```
 
 <img src="random_plot_mainz.png" width="900">

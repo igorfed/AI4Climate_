@@ -67,12 +67,23 @@ if __name__ == '__main__':
 		#print(f'h: {height}, wight: {width}')
 		__dataset.imageCopy2Dest(sample, i)
 		##------------------------##
+		name = sample['landmarks'][0][0]
+		id = f'{i:04n}'
+		hasWater = sample['landmarks'][0][1]
+
+		
+		fname = f'{name}_{i:04n}_{hasWater}.png'
+
+		print(fname)
+		
+		__csv.fname.append(fname)
 		__csv.name.append(sample['landmarks'][0][0])
 		__csv.id.append(f'{i:04n}')
 		__csv.hasWater.append(int(sample['landmarks'][0][1]))
 		__csv.TimeEvent.append(sample['landmarks'][0][2])
 		__csv.lat.append(sample['landmarks'][0][3])
 		__csv.lon.append(sample['landmarks'][0][4])
+		__csv.dict["fname"] = __csv.fname
 		__csv.dict["dataset"] = __csv.name
 		__csv.dict["image_id"] = __csv.id
 		__csv.dict["timeEvent"] = __csv.TimeEvent

@@ -19,45 +19,40 @@ The validation set is a set of data, separate from the training set, that is use
 
 The test set is a separate set of data used to test the model after completing the training.
 
-### Variant 1
+### Variant 1 (2493 images)
 
-|Dataset     |Class 0| Class 1 | Train |Test | Validation |
+Full dataset **desktop**, **mobile**
+
+|Dataset     |Train Class0|Train Class1| Test Class0 |Test Class1 | Val Class0 | Val Class1 |
 |------------| :-- | :-- | :-- |   :-- |   :-- |   :-- |
-|desktop     |     |     |     |       |       |       |
-|mobile      |     |     |     |       |       |       |
+|Dataset 1_0     | 218    | 1776    |  22   |  228     |  22     |   227    |
+|Dataset 1_1     | 214    | 1780    |  20   |  230     |  28     |   221    |
 
-### Variant 2
+### Variant 2 (2893 images)
 
-|Dataset     |Class 0| Class 1 | Train |Test | Validation |
+Full dataset **desktop**, **mobile**, **berlin**, **munich**, **mainz**, **zurich**
+
+Full dataset **desktop**, **mobile**
+
+|Dataset     |Train Class0|Train Class1| Test Class0 |Test Class1 | Val Class0 | Val Class1 |
 |------------| :-- | :-- | :-- |   :-- |   :-- |   :-- |
-|desktop     |     |     |     |       |       |       |
-|mobile      |     |     |     |       |       |       |
-|berlin      | 100 |     |     |       |       |       |
-|munich      | 100 |     |     |       |       |       |
-|mainz       | 100 |     |     |       |       |       |
-|zurich      | 100 |     |     |       |       |       |
+|Dataset 2_0     | 525    | 1789    |  63   |  227     |  74     |   215    |
+|Dataset 2_1     | 534    | 1780    |  62   |  228     |  66     |   223    |
 
-### Variant 3
+### Variant 3 (3334 images)
 
-|Dataset     |Class 0| Class 1 | Train |Test | Validation |
+Full dataset **desktop**, **mobile**, **roadway**, **berlin**, **munich**, **mainz**, **zurich**
+
+|Dataset     |Train Class0|Train Class1| Test Class0 |Test Class1 | Val Class0 | Val Class1 |
 |------------| :-- | :-- | :-- |   :-- |   :-- |   :-- |
-|desktop     |     |     |     |       |       |       |
-|mobile      |     |     |     |       |       |       |
-|roadway     |     |     |     |       |       |       |
-|berlin      | 100 |     |     |       |       |       |
-|munich      | 100 |     |     |       |       |       |
-|mainz       | 100 |     |     |       |       |       |
-|zurich      | 100 |     |     |       |       |       |
+|Dataset 3_0     | 521    | 2146    |  70   |  264     |  71     |   262    |
+|Dataset 3_1     | 547    | 2120    |  60   |  274     |  55     |   278    |
 
-### Variant 4
+### Variant 4 (4882 images)
 
-|Dataset     |Class 0| Class 1 | Train |Test | Validation |
+Full dataset **desktop**, **mobile**, **roadway**, **eu2013**, **berlin**, **munich**, **mainz**, **zurich**
+
+|Dataset     |Train Class0|Train Class1| Test Class0 |Test Class1 | Val Class0 | Val Class1 |
 |------------| :-- | :-- | :-- |   :-- |   :-- |   :-- |
-|desktop     |     |     |     |       |       |       |
-|mobile      |     |     |     |       |       |       |
-|roadway     |     |     |     |       |       |       |
-|eu2013      |     |     |     |       |       |       |
-|berlin      | 100 |     |     |       |       |       |
-|munich      | 100 |     |     |       |       |       |
-|mainz       | 100 |     |     |       |       |       |
-|zurich      | 100 |     |     |       |       |       |
+|Dataset 4_0     | 528    | 3378    |  70   |  419     |  64     |   424    |
+|Dataset 4_1     | 520    | 3386    |  75   |  414     |  67     |   421    |

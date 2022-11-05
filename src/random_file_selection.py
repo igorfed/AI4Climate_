@@ -55,18 +55,30 @@ if __name__ == '__main__':
 	import random
 	lst =  random.sample(lst, k = int(args.n))
 	print('lst', lst, len(lst))
-	
+	idx = 0
 	for i in range(len(lst)):
 		k = lst[i]
 		sample = __dataset[k]
-		print(k, i, sample['landmarks'][0][0], sample['landmarks'][0][1], sample['landmarks'][0][2], sample['landmarks'][0][3], sample['landmarks'][0][3])
-		__dataset.imageCopy2Dest(sample, k)
+		#print(idx, k, i, sample['landmarks'][0][0], sample['landmarks'][0][1], sample['landmarks'][0][2], sample['landmarks'][0][3], sample['landmarks'][0][3])
+		
+
+		name = sample['landmarks'][0][0]
+		hasWater = sample['landmarks'][0][1]
+		fname = f'{name}_{idx:04n}_{hasWater}.png'
+		
+
+		__csv.fname.append(fname)
 		__csv.name.append(sample['landmarks'][0][0])
-		__csv.id.append(f'{k:04n}')
+		__csv.id.append(f'{idx:04n}')
 		__csv.hasWater.append(sample['landmarks'][0][1])
 		__csv.TimeEvent.append(sample['landmarks'][0][2])
 		__csv.lat.append(sample['landmarks'][0][3])
 		__csv.lon.append(sample['landmarks'][0][4])
+		#print(idx, k, i)
+		__dataset.imageCopy2Dest(sample, idx)
+		idx = idx +1
+
+	__csv.dict["fname"] = __csv.fname		
 	__csv.dict["dataset"] = __csv.name
 	__csv.dict["image_id"] = __csv.id
 	__csv.dict["timeEvent"] = __csv.TimeEvent

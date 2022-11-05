@@ -108,20 +108,28 @@ if __name__ == '__main__':
 	__dataset = EU2013(source = args.source, out = args.dest)
 	flooding = __dataset.readTextFile(filename=args.flooding)
 	__csv = CSV
+	idx = 1549
 	for i in range(len(__dataset)):
 		sample = __dataset[i]
 		if (sample['name'] in flooding):
 			#__dataset.imageCopy2Dest(sample, i)
+			
 			__csv.name.append(dataset)
-			__csv.id.append(f'{i:04n}')
-			__csv.hasWater.append(1)
+			__csv.id.append(f'{idx:04n}')
+			__csv.hasWater.append(0)
 			__csv.TimeEvent.append(currentTime2Millisec())
 			__csv.lat.append('12.3456')
 			__csv.lon.append('78.9012')
-			r = f'{__csv.name[-1]}_{i:04n}_{__csv.hasWater[-1]}.png'
-			print(r)
+			r = f'{__csv.name[-1]}_{idx:04n}_{__csv.hasWater[-1]}.png'
+			__csv.fname.append(r)
+			print(r, idx, i)
+
+			#r = f'{__csv.name[-1]}_{i:04n}_{__csv.hasWater[-1]}.png'
+			#print(r)
 			image = Image.fromarray(sample['image'])
 			image.save(os.path.join(dest_images,r))
+			idx = idx+1
+	__csv.dict["fname"] = __csv.fname
 	__csv.dict["dataset"] = __csv.name
 	__csv.dict["image_id"] = __csv.id
 	__csv.dict["timeEvent"] = __csv.TimeEvent

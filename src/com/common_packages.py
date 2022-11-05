@@ -174,7 +174,7 @@ class DATASETS():
 			top = ch -int(768/2)-128
 			right = cw + int(1024/2)
 			bottom = ch +int(768/2)-128
-			print(image.size)
+			#print(image.size)
 			#left = 0 
 			#upper = 0 
 			#right = w
@@ -185,18 +185,20 @@ class DATASETS():
 			return image
 
 		image = Image.fromarray(sample['image'])
+		#only for cityScape
 		image = new_image_crop(image)
 		image.save(os.path.join(self.dest_dir, new_image_name(sample, i)))
 
 def read_csv(i, csv_file):
 	landmarks_frame = pd.read_csv(csv_file)
-	img_name = landmarks_frame.iloc[i,0]
-	img_id = landmarks_frame.iloc[i,1]
-	img_TimeEvent = landmarks_frame.iloc[i,2]
-	img_hasWater = landmarks_frame.iloc[i,3]
-	img_lat, img_lon = landmarks_frame.iloc[i,4], landmarks_frame.iloc[i,5]
+	img_fname = landmarks_frame.iloc[i,0] 
+	img_name = landmarks_frame.iloc[i,1]
+	img_id = landmarks_frame.iloc[i,2]
+	img_TimeEvent = landmarks_frame.iloc[i,3]
+	img_hasWater = landmarks_frame.iloc[i,4]
+	img_lat, img_lon = landmarks_frame.iloc[i,5], landmarks_frame.iloc[i,6]
 
-	return img_name, img_TimeEvent, img_id, img_hasWater, img_lat, img_lon
+	return img_fname, img_name, img_TimeEvent, img_id, img_hasWater, img_lat, img_lon
 
 
 class DATA_PLOT:
@@ -215,7 +217,7 @@ class DATA_PLOT:
 		self.path = path
 		for i, fname in enumerate(os.listdir(path)):
 			fname = os.path.join(path, fname)
-			_, _, _, img_hasWater, _, _ = read_csv(i, csv_file)
+			img_fname,_, _, _, img_hasWater, _, _ = read_csv(i, csv_file)
 			r = f'Has Water: {img_hasWater}'
 			#print(i, fname, r)
 			if img_hasWater==1: 
@@ -257,8 +259,9 @@ class DATA_PLOT:
 				for i in range(3):
 					ax = fig.add_subplot(1, 3, i + 1)
 					r = self.i_y[random.randint(0,len(self.i_y)-1)]
-					img_name, _, img_id, img_hasWater, _, _ = read_csv(r,csv_file)
-					fname = os.path.join(self.path,f'{img_name}_{img_id:04d}_{img_hasWater}.png')
+					img_fname, img_name, _, img_id, img_hasWater, _, _ = read_csv(r,csv_file)
+					#fname = os.path.join(self.path,f'{img_name}_{img_id:04d}_{img_hasWater}.png')
+					fname = os.path.join(self.path,img_fname)
 					frame = metadata(fname=fname)
 					width, height = frame.size
 					s = f'ID: {img_id}, Has Water: {img_hasWater}, W: {width}, H: {height}'
@@ -273,8 +276,9 @@ class DATA_PLOT:
 				for i in range(3):
 					ax = fig.add_subplot(1, 3, i + 1)
 					r = self.i_n[random.randint(0,len(self.i_n)-1)]
-					img_name, _, img_id, img_hasWater, _, _ = read_csv(r,csv_file)
-					fname = os.path.join(self.path,f'{img_name}_{img_id:04d}_{img_hasWater}.png')
+					img_fname, img_name, _, img_id, img_hasWater, _, _ = read_csv(r,csv_file)
+					#fname = os.path.join(self.path,f'{img_name}_{img_id:04d}_{img_hasWater}.png')
+					fname = os.path.join(self.path,img_fname)
 					frame = metadata(fname=fname)
 					width, height = frame.size
 					s = f'ID: {img_id}, Has Water: {img_hasWater}, W: {width}, H: {height}'
@@ -291,20 +295,21 @@ class DATA_PLOT:
 					ax = fig.add_subplot(2, 3, i + 1)
 					if water <3:
 						r = self.i_y[random.randint(0,len(self.i_y)-1)]
-						img_name, _, img_id, img_hasWater, _, _ = read_csv(r,csv_file)
+						img_fname, img_name, _, img_id, img_hasWater, _, _ = read_csv(r,csv_file)
 					else:
 						r = self.i_n[random.randint(0,len(self.i_n)-1)]
-						img_name, _, img_id, img_hasWater, _, _ = read_csv(r,csv_file)
+						img_fname, img_name, _, img_id, img_hasWater, _, _ = read_csv(r,csv_file)
 
 
 					
 				
-					fname = os.path.join(self.path,f'{img_name}_{img_id:04d}_{img_hasWater}.png')
+					#fname = os.path.join(self.path,f'{img_name}_{img_id:04d}_{img_hasWater}.png')
+					fname = os.path.join(self.path,img_fname)
 					frame = metadata(fname=fname)
 					width, height = frame.size
-					s = f'ID: {img_id}, Has Water: {img_hasWater}, W: {width}, H: {height}'
+					s = f'ID: {img_fname}, Has Water: {img_hasWater}, W: {width}, H: {height}'
 					ax.imshow(frame)
-					r = f'ID: {img_id}, Has Water: {img_hasWater}, w: {width}, h {height}'
+					r = f'ID: {img_fname}, Has Water: {img_hasWater}, w: {width}, h {height}'
 					if water <3:
 						ax.set_title(s, fontsize=11, color='red')
 					else:

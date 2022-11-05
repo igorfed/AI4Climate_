@@ -9,7 +9,8 @@ from com.common_packages import check_if_dir_existed
 from com.common_packages import check_if_file_existed
 import pandas as pd
 import matplotlib.pyplot as plt
-\
+import os
+
 class CFG:
     # number of epoch to train model
     epochs =20 
@@ -27,7 +28,7 @@ class CFG:
     train_path = '/media/igofed/SSD_1T/AI4CI/chest_xray/train'
     validate_path = '/media/igofed/SSD_1T/AI4CI/chest_xray/val'
     test_path = '/media/igofed/SSD_1T/AI4CI/chest_xray/test'
-
+    class_name = ['No-Flooded Image', 'Flooded Image']
 
 class DS:
     train = []
@@ -88,16 +89,3 @@ class Flood_NonFlood_dataset(torch.utils.data.Dataset):
             image = self.transfrom(image)
 
         return {'image': image, 'label': label}    
-
-def show_image(image, label, get_denormalize = True):
-    '''
-    Helper Gunction for showing the image
-    '''
-    image = image.permute(1,2,0)
-    mean, std = torch.FloatTensor([0.485, 0.456, 0.406]), torch.FloatTensor([0.229, 0.224, 0.225])
-    
-    if get_denormalize:
-        image = image*std + mean
-        image = np.clip(image, 0, 1)
-    plt.imshow(image)
-    plt.title(label)
