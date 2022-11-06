@@ -22,37 +22,37 @@ The test set is a separate set of data used to test the model after completing t
 ### Variant 1 (2493 images)
 
 Full dataset **desktop**, **mobile**
-
+```python3 src/test_val_train.py -source '/media/igofed/SSD_1T/AI4CI/FULLDATASET/FULLDATASET' -csv "annotation.csv" -dest 'weather_1' -type 1```
+<img src="weather1.png" width="800">
 |Dataset     |Train Class0|Train Class1| Test Class0 |Test Class1 | Val Class0 | Val Class1 |
 |------------| :-- | :-- | :-- |   :-- |   :-- |   :-- |
-|Dataset 1_0     | 218    | 1776    |  22   |  228     |  22     |   227    |
-|Dataset 1_1     | 214    | 1780    |  20   |  230     |  28     |   221    |
+|Dataset 1     | 188    | 1553    |  43   |  335     |  28     |   346    |
 
-### Variant 2 (2893 images)
+
+### Variant 2 (3243 images)
 
 Full dataset **desktop**, **mobile**, **berlin**, **munich**, **mainz**, **zurich**
-
-Full dataset **desktop**, **mobile**
-
+```python3 src/test_val_train.py -source '/media/igofed/SSD_1T/AI4CI/FULLDATASET/FULLDATASET' -csv "annotation.csv" -dest 'weather_2' -type 2```
+<img src="weather2.png" width="800">
 |Dataset     |Train Class0|Train Class1| Test Class0 |Test Class1 | Val Class0 | Val Class1 |
 |------------| :-- | :-- | :-- |   :-- |   :-- |   :-- |
-|Dataset 2_0     | 525    | 1789    |  63   |  227     |  74     |   215    |
-|Dataset 2_1     | 534    | 1780    |  62   |  228     |  66     |   223    |
+|Dataset 2     | 705    | 1549    |  144   |  333     |  160     |   352    |
 
-### Variant 3 (3334 images)
+### Variant 3 (3684 images)
 
 Full dataset **desktop**, **mobile**, **roadway**, **berlin**, **munich**, **mainz**, **zurich**
-
+```python3 src/test_val_train.py -source '/media/igofed/SSD_1T/AI4CI/FULLDATASET/FULLDATASET' -csv "annotation.csv" -dest 'weather_3' -type 3```
+<img src="weather3.png" width="800">
 |Dataset     |Train Class0|Train Class1| Test Class0 |Test Class1 | Val Class0 | Val Class1 |
 |------------| :-- | :-- | :-- |   :-- |   :-- |   :-- |
-|Dataset 3_0     | 521    | 2146    |  70   |  264     |  71     |   262    |
-|Dataset 3_1     | 547    | 2120    |  60   |  274     |  55     |   278    |
+|Dataset 3     | 718    | 1863    |  143   |  395     |  148     |   417    |
 
-### Variant 4 (4882 images)
+### Variant 4 (5549 images)
 
 Full dataset **desktop**, **mobile**, **roadway**, **eu2013**, **berlin**, **munich**, **mainz**, **zurich**
+```python3 src/test_val_train.py -source '/media/igofed/SSD_1T/AI4CI/FULLDATASET/FULLDATASET' -csv "annotation.csv" -dest 'weather_4' -type 4```
+<img src="weather4.png" width="800">
 
 |Dataset     |Train Class0|Train Class1| Test Class0 |Test Class1 | Val Class0 | Val Class1 |
-|------------| :-- | :-- | :-- |   :-- |   :-- |   :-- |
-|Dataset 4_0     | 528    | 3378    |  70   |  419     |  64     |   424    |
-|Dataset 4_1     | 520    | 3386    |  75   |  414     |  67     |   421    |
+|------------| :--  | :--  | :--  |   :-- |   :-- |   :-- |
+|Dataset 4 | 901  | 2983 |  205  |  627  |  218   |   615 |

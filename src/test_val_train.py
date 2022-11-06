@@ -2,7 +2,7 @@ import csv
 import os
 from tabnanny import check
 import pandas as pd
-from com.common_packages import getCurrentTime, check_if_dir_existed
+from com.common_packages import getCurrentTime, check_if_dir_existed, check_if_file_existed
 import random
 from time import time
 import sys
@@ -11,6 +11,10 @@ import numpy as np
 from com.colors import COLOR
 from PIL import Image
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+import argparse
+
+
+
 
 def destination_path(dest):
 	'''
@@ -61,7 +65,9 @@ def bubbleSort(arr):
 
 class DATA_to_TEST_VAL_TRAIN:
 	
-    def __init__(self, path, csv_file, dest, percentage=0.8, full=True, dataset_num=4):
+    def __init__(self, images_folder, csv_file, dest, percentage, dataset_num):
+
+    #def __init__(self, path, csv_file, dest, percentage=0.8, dataset_num=4):
         '''path - path to the images and csv'
         '''
         #self.path = path
@@ -76,16 +82,17 @@ class DATA_to_TEST_VAL_TRAIN:
         self.dest = dest
         self.percentage = percentage
         # full path to csv
-        self.csv_file = os.path.join(path, csv_file)
+        self.csv_file = os.path.join(images_folder, csv_file)
         self.df = pd.read_csv(self.csv_file)
-        self.image_path = os.path.join(path, 'image')
+        
+        self.image_path =  images_folder
         self.length_of_data()
         self.dest_test = os.path.join(self.dest, 'test')
         
         self.dest_valid = os.path.join(self.dest, 'valid')
         
         self.dest_train = os.path.join(self.dest, 'train')
-        self.dateset_num = dataset_num
+        self.dataset_num = dataset_num
         check_if_dir_existed(self.dest_test,True)
         check_if_dir_existed(self.dest_valid,True)
         check_if_dir_existed(self.dest_train,True)
@@ -177,11 +184,11 @@ class DATA_to_TEST_VAL_TRAIN:
     def files2list(self):
         ################################
         def read_csv(i, df):
-            img_name = df.iloc[i,0]
-            img_id = df.iloc[i,1]
-            img_hasWater = df.iloc[i,3]
-            r = f'{img_name}_{img_id:04d}_{img_hasWater}.png'
-            return img_name, img_hasWater, r
+            img_fname = df.iloc[i,0] 
+            img_name = df.iloc[i,1]
+            img_hasWater = df.iloc[i,2]
+            
+            return img_fname, img_name, img_hasWater
 
         # Total -> test -> (Class0 Class1)
         ################################        
@@ -202,35 +209,77 @@ class DATA_to_TEST_VAL_TRAIN:
                 if img_hasWater==1: 
                     label_path = os.path.join(dest, 'Class1')
                     check_if_dir_existed(label_path, True)
-
+                print(label_path, image_name)
                 image.save(os.path.join(label_path, image_name))    
 
         for i, fname in enumerate(os.listdir(self.image_path)):
-            img_name, img_hasWater, image_name = read_csv(i, self.df)
-            print('image_name: ', image_name)
-            r = os.path.join(self.image_path, fname)
+            img_fname, img_name, img_hasWater = read_csv(i, self.df)
+            #if self.dataset_num ==4:
+            r = os.path.join(self.image_path, img_fname)
             image = Image.open(r).convert('RGB')
             image.verify()
-            classes(i, img_hasWater, self.list_train, self.dest_train, image_name)
-            classes(i, img_hasWater, self.list_test, self.dest_test, image_name)
-            classes(i, img_hasWater, self.list_valid, self.dest_valid, image_name)
+
+            if self.dataset_num ==4:
+                if img_name in ['desktop', 'mobile', 'roadway', 'eu2013', 'berlin', 'munich', 'mainz', 'zurich']:
+                    print(i, img_fname, img_name, type(self.dataset_num), img_hasWater)
+                    image = Image.open(r).convert('RGB')
+                    image.verify()
+                    classes(i, img_hasWater, self.list_train, self.dest_train, img_fname)
+                    classes(i, img_hasWater, self.list_test, self.dest_test, img_fname)
+                    classes(i, img_hasWater, self.list_valid, self.dest_valid, img_fname)
+            elif self.dataset_num ==3:
+                if img_name in ['desktop', 'mobile', 'roadway', 'berlin', 'munich', 'mainz', 'zurich']:
+                    print(i, img_fname, img_name, type(self.dataset_num), img_hasWater)
+                    image = Image.open(r).convert('RGB')
+                    image.verify()
+                    classes(i, img_hasWater, self.list_train, self.dest_train, img_fname)
+                    classes(i, img_hasWater, self.list_test, self.dest_test, img_fname)
+                    classes(i, img_hasWater, self.list_valid, self.dest_valid, img_fname)
+            elif self.dataset_num ==2:
+                if img_name in ['desktop', 'mobile', 'berlin', 'munich', 'mainz', 'zurich']:
+                    print(i, img_fname, img_name, type(self.dataset_num), img_hasWater)
+                    image = Image.open(r).convert('RGB')
+                    image.verify()
+                    classes(i, img_hasWater, self.list_train, self.dest_train, img_fname)
+                    classes(i, img_hasWater, self.list_test, self.dest_test, img_fname)
+                    classes(i, img_hasWater, self.list_valid, self.dest_valid, img_fname)
+            elif self.dataset_num ==1:
+                if img_name in ['desktop', 'mobile']:
+                    print(i, img_fname, img_name, type(self.dataset_num), img_hasWater)
+                    image = Image.open(r).convert('RGB')
+                    image.verify()
+                    classes(i, img_hasWater, self.list_train, self.dest_train, img_fname)
+                    classes(i, img_hasWater, self.list_test, self.dest_test, img_fname)
+                    classes(i, img_hasWater, self.list_valid, self.dest_valid, img_fname)
+                
 
 
 
-
+def arg_parser():
+    parser = argparse.ArgumentParser(description = 'This is a random selection of images program')
+    parser.add_argument('-source', '--source', required=False, type=str, help='Source of images')
+    parser.add_argument('-csv', '--csv', required=False, type=str, help='Name of annotations file')
+    parser.add_argument('-dest', '--dest', required=False, type=str, help='Destination to copy')
+    parser.add_argument('-type', '--type', required=False, type=int, help='Type of the dataset [mobile, desktop, roadway, eu2013 ...]')
+    parser.add_argument('-p', '--p', required=False, type=str, help='Percaintage from the sourse')
+    return parser.parse_args()
 
 
 
 if __name__ == '__main__':
 
-    root_dir = '/media/igofed/SSD_1T/AI4CI/FULLDATASET/FULLDATASET3'
-    csv_file = "annotation.csv"
-    time = getCurrentTime()
-    dest = os.path.join((Path(__file__).parent.parent), 'weather')
-    print(dest)
-    dest= destination_path(dest=None)
+    #root_dir = '/media/igofed/SSD_1T/AI4CI/FULLDATASET/FULLDATASET'
+    #csv_file = "annotation.csv"
+    
+    args = arg_parser()
+    images_folder = os.path.join(args.source, 'image')
+    check_if_dir_existed(images_folder)
+    csv_file = os.path.join(args.source, args.csv)
+    check_if_file_existed(csv_file)
+    dest = os.path.join((Path(__file__).parent.parent), args.dest)
     check_if_dir_existed(dest,True)
-    dataset_num = 3
-    __train = DATA_to_TEST_VAL_TRAIN(root_dir, csv_file, dest, percentage=0.8, full=True, dataset_num = dataset_num)
+    __train = DATA_to_TEST_VAL_TRAIN(images_folder, csv_file, dest, percentage=0.7, dataset_num = args.type)
+
+    
 
     print('done')
