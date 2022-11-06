@@ -19,9 +19,9 @@ To provide more tests in CNN tuning we used **1549**  eu flooding Image dataset.
 
 |Dataset     |Image_ID | TimeEvent | hasWater |lat |lon | Flood Images | No-Flood Images | Total |Notes |
 |------------| :-- | :-- | :-- | :-- | :-- |:-- |:-- |:-- | ------------------------------------ |
-|desktop |0000|1626213600000|1|50.4922 |5.8667|1907|40|1947|Desktop dataset (Carlo)$^{1)}$ |
+|desktop |0000|1626213600000|1|50.4922 |5.8667|1907|40|1947|Desktop dataset (Carlo) $^{1)}$ |
 |...|...|...|...|...|...|...|...| ... | ...|
-|mobile |0000|1614253405477|0|58.4059| 15.6012| 219 |327 | 546 | Mobile dataset (Carlo)$^{2)}$ |
+|mobile |0000|1614253405477|0|58.4059| 15.6012| 219 |327 | 546 | Mobile dataset (Carlo) $^{2)}$ |
 |...|...|...|...|...|...|...|...| ... | ...|
 |roadway |0000|1652968461000| 1| 12.3456| 78.9012| 441 | 0| 441|Roadway Flooding Image Dataset $^{3)}$ |
 |...|...|...|...|...|...|...|...| ... | ...|
