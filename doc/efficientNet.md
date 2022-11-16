@@ -6,7 +6,7 @@ EfficientNet designed based on the base model B0</br>
 <img src="B0Model.png" width="480">
 
 
-# import
+# Define and import model archirtectuire 
 
 # Create Fully Connected Network
 
@@ -14,10 +14,9 @@ EfficientNet designed based on the base model B0</br>
 
 # Hyperporameters
 
-# Load DAta
+# Load Data from the disk
 
 # Initialize Network
-
 
 # Loss and optimizer
 

@@ -23,7 +23,15 @@ The test set is a separate set of data used to test the model after completing t
 
 Full dataset **desktop**, **mobile**
 ```python3 src/test_val_train.py -source '/media/igofed/SSD_1T/AI4CI/FULLDATASET/FULLDATASET' -csv "annotation.csv" -dest 'weather_1' -type 1```
+Accuracy after training EfficientNetB0 model in PyTorch from scratch without pretrained weights.
+
+        Training loss        : 0.052, 
+        Training acc         : 0.985, 
+        Validation loss      : 0.144, 
+        Validation acc       : 0.945
+
 <img src="weather1.png" width="800">
+
 |Dataset     |Train Class0|Train Class1| Test Class0 |Test Class1 | Val Class0 | Val Class1 |
 |------------| :-- | :-- | :-- |   :-- |   :-- |   :-- |
 |Dataset 1     | 188    | 1553    |  43   |  335     |  28     |   346    |
@@ -33,7 +41,14 @@ Full dataset **desktop**, **mobile**
 
 Full dataset **desktop**, **mobile**, **berlin**, **munich**, **mainz**, **zurich**
 ```python3 src/test_val_train.py -source '/media/igofed/SSD_1T/AI4CI/FULLDATASET/FULLDATASET' -csv "annotation.csv" -dest 'weather_2' -type 2```
+
+        Training loss         : 0.052, 
+        Training acc          : 0.980,
+        Validation loss       : 0.176, 
+        Validation acc        : 0.959
+
 <img src="weather2.png" width="800">
+
 |Dataset     |Train Class0|Train Class1| Test Class0 |Test Class1 | Val Class0 | Val Class1 |
 |------------| :-- | :-- | :-- |   :-- |   :-- |   :-- |
 |Dataset 2     | 705    | 1549    |  144   |  333     |  160     |   352    |
@@ -42,7 +57,14 @@ Full dataset **desktop**, **mobile**, **berlin**, **munich**, **mainz**, **zuric
 
 Full dataset **desktop**, **mobile**, **roadway**, **berlin**, **munich**, **mainz**, **zurich**
 ```python3 src/test_val_train.py -source '/media/igofed/SSD_1T/AI4CI/FULLDATASET/FULLDATASET' -csv "annotation.csv" -dest 'weather_3' -type 3```
+
+        Training loss        : 0.052, 
+        Training acc         : 0.980
+        Validation loss      : 0.176, 
+        validation acc       : 0.959
+
 <img src="weather3.png" width="800">
+
 |Dataset     |Train Class0|Train Class1| Test Class0 |Test Class1 | Val Class0 | Val Class1 |
 |------------| :-- | :-- | :-- |   :-- |   :-- |   :-- |
 |Dataset 3     | 718    | 1863    |  143   |  395     |  148     |   417    |
@@ -51,7 +73,13 @@ Full dataset **desktop**, **mobile**, **roadway**, **berlin**, **munich**, **mai
 
 Full dataset **desktop**, **mobile**, **roadway**, **eu2013**, **berlin**, **munich**, **mainz**, **zurich**
 ```python3 src/test_val_train.py -source '/media/igofed/SSD_1T/AI4CI/FULLDATASET/FULLDATASET' -csv "annotation.csv" -dest 'weather_4' -type 4```
+
 <img src="weather4.png" width="800">
+
+        Training loss        : 0.070, 
+        Training acc         : 0.974,
+        Validation loss      : 0.226, 
+        Validation acc       : 0.929
 
 |Dataset     |Train Class0|Train Class1| Test Class0 |Test Class1 | Val Class0 | Val Class1 |
 |------------| :--  | :--  | :--  |   :-- |   :-- |   :-- |
