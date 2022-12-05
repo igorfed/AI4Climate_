@@ -9,7 +9,17 @@ By default it is split to 80% -train 10% val, 10% test
 
 ## The training Set
 
-It is the set of data that is used to train and make the model learn the hidden features/patterns in the data. In each epoch, the same training data is fed to the NN architecture repeatedly, and the model continues to learn the features of the data. The training set should have a diversified set of inputs so that the model is trained in all scenarios and can predict any unseen data sample that may appear in the future.
+It is the set of data that is used to train and make the model learn the hidden features/patterns in the data. In each epoch, the same training data is fed to the NN architecture repeatedly, and the model continues to learn the features of the data. The training set should have a diversified set of inputs so that the model is trained in all scenarios and can predict any unseen data sample that may appear in the future in ..
+
+To plot and save random butch of the dataset run:
+```./dataset_test.sh```
+it will plot and save batch of [train/valid or plot] images (if specify) on figure ```../figures/[balance]_[mode]_[YYYYMMDD_hhmmss].png```
+
+```dataset='/media/igofed/SSD_2T/DATASETS/weather_4'```
+```mode='train'```
+```python3 src/torchEfficientNet/train.py --dataset $dataset --model $model ```
+
+<img src="../figures/Balanced_train_20221202-114256.png" width="12800">
 
 ## The validation Set
 
