@@ -25,9 +25,12 @@ it will plot and save batch of [train/valid or plot] images (if specify) on figu
 
 The validation set is a set of data, separate from the training set, that is used to validate our model performance during training. This validation process gives information that helps us tune the model’s hyperparameters and configurations accordingly. It is like a critic telling us whether the training is moving in the right. The validation set is a set of data, separate from the training set, that is used to validate our model performance during training. This validation process gives information that helps us tune the model’s hyperparameters and configurations accordingly.
 
+<img src="../figures/Balanced_valid_20221205-173247.png" width="12800">
+
 ## The test Set
 
 The test set is a separate set of data used to test the model after completing the training.
+<img src="../figures/Balanced_test_20221205-193548.png" width="12800">
 
 ### Variant 1 (2493 images)
 
