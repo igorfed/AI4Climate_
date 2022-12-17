@@ -136,50 +136,21 @@ class DATA_to_TEST_VAL_TRAIN:
         length_valid = int((len(list_total) - length_train)/2)
         length_test = int(len(list_total) - length_train - length_valid)
         check_sum(length_test, length_train, length_valid, list_total)
-        
-        
-        #print(f'Total images {len(N)} \t{self.percentage*100} %')
-        #print(f'Total images {len(N)} \t{self.percentage*100} %')
         print('train :\t', length_train, ', percentage :\t', self.percentage)
         print('val   :\t', length_valid)
         print('test  :\t', length_test)
-
-
-        
-        
         list_train =  random.sample(list_total, k = length_train)
         bubbleSort(list_train)
         list_valid_test = in_list(list_total, list_train)
         check_dublicated_values(list_train)
         ###################################
-        #print('list_train', len(list_train) )
-        
+       
         list_valid =  random.sample(list_valid_test, k = length_valid)
         bubbleSort(list_valid)
-        #print('list_valid', len(list_valid) )
-
         list_test = in_list( list_valid_test, list_valid)
-        #print('list_test', len(list_test))
-        #check_list(list_train, list_valid, list_test, list_total)
         self.list_train = list_train
         self.list_test = list_test
         self.list_valid = list_valid
-
-        #print(len(list_valid), np.min(list_valid), np.max(list_valid), list_valid )
-        
-        #list_valid =  random.sample(list_valid_test, k = length_valid)
-        #print(len(list_valid))
-        #list_test = in_list(list_valid_test, list_valid )
-        #print(len(list_test))
-
-        #if (len(list_test) + len(list_valid) + len(list_test) == len(self.df)):
-        #    print('True')
-        #else:
-        #    print('False')            
-        
-
-    
-
 
     def files2list(self):
         ################################

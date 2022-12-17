@@ -19,9 +19,11 @@ from PIL import Image
 from com.common_packages import check_if_dir_existed
 from com.common_packages import check_if_file_existed
 import argparse
-import utils
+import com.utils as utils
 
 import random
+
+
 def arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--dataset", type=str, required=False, help="path to the dataset")
@@ -29,7 +31,6 @@ def arg_parser():
     parser.add_argument("-p", "--plot", action='store_true', help="Random plot batch of images")
     parser.add_argument("-s", "--save", action='store_true', help="Save figure")
     parser.add_argument("-b", "--balance", action='store_true', help="Balance classes in source dataset")
-
     return vars(parser.parse_args())
 
 class CustomDataset(torch.utils.data.Dataset):
@@ -46,13 +47,14 @@ class CustomDataset(torch.utils.data.Dataset):
     """
     def __init__(self, 
                 image_dir   : str, 
-                image_size  : int, # from config CFG
-                rotate      : int,    # rotation int
-                mean        : list,      # mean value List[int, int, int]
-                std         : list,       # std value List[int, int, int]
-                mode        : str        # 'train' or 'test' or 'valid'
+                image_size  : int,  # from config CFG
+                rotate      : int,  # rotation int
+                mean        : list, # mean value List[int, int, int]
+                std         : list, # std value List[int, int, int]
+                mode        : str   # 'train' or 'test' or 'valid'
                 ) -> None:
         super(CustomDataset, self).__init__()
+
         self.paths = list(glob.glob(f"{image_dir}/*/*"))
         self.image_size = image_size
         self.rotate = rotate
@@ -60,7 +62,7 @@ class CustomDataset(torch.utils.data.Dataset):
         self.delimiter = config.delimiter
         self.mean = mean
         self.std = std
-        self.img_extension = ("jpg", "jpeg", "png", "ppm", "bmp", "pgm", "tif", "tiff")
+        self.img_extension = ("jpg", "jpeg", "png", "bmp", "tif", "tiff")
         print(COLOR.Green, f"[INFO]: Custom Loader for :\t {self.mode} data", COLOR.END)
         self.classes, self.class_to_idx = self.find_classes(image_dir)
         print(COLOR.Green + 'Classes', self.class_to_idx ,  COLOR.END)
@@ -72,25 +74,23 @@ class CustomDataset(torch.utils.data.Dataset):
                     ) -> Tuple[List[str], Dict[str, int]]:
 
         """Finds the class folders in a dataset.
-        See :class:`DatasetFolder` for details.
-         directory(str): Root directory path, corresponding to ``image_dir``
+         directory: Root directory path with image dir
          directory/
             ├── class_0
             │   ├── xxx.png
             │   ├── xxy.png
             │   └── ...
             └── class_y
-                ├── 123.png
-                ├── nsdf3.png
+                ├── xx0.png
+                ├── xx1.png
                 └── ...
         Returns:
             (Tuple[List[str], Dict[str, int]]): List of all classes and dictionary mapping each class to an index.
+        ATTENTION configuration of files saved only for 2 classes has Water or not
         """
-        #print(f"Directory {directory}")
         classes = sorted(entry.name for entry in os.scandir(directory) if entry.is_dir())
         if not classes:
             raise FileNotFoundError(f"Couldn't find any class folder in {directory}.")
-
         class_to_idx = {cls_name: i for i, cls_name in enumerate(classes)}
         return classes, class_to_idx
 
@@ -138,16 +138,17 @@ class CustomDataset(torch.utils.data.Dataset):
             ])
 
         else:
-            raise ValueError(COLOR.Red, "Unsupported data read type. Please use `Train` or `Valid` or `Test`", COLOR.END)
+            raise ValueError(COLOR.Red, "Unsupported data read type. Please use `train` or `valid` or `test`", COLOR.END)
 
     def __getitem__(self, index: int)-> Tuple[torch.Tensor, int]:
 
         image_dir, image_name = self.paths[index].split(self.delimiter)[-2:]
         img = self.load_image(index)
         class_idx = self.class_to_idx[image_dir]
+        
         return self.transform(img), class_idx
 
-#########Custom Load Dataset#####################################
+######### Load Custom Dataset #####################################
 
 def load_dataset(data_path, mode, balance_dataset=False):
     """Creates training and testing DataLoaders.
@@ -202,7 +203,7 @@ def load_dataset(data_path, mode, balance_dataset=False):
     if mode == 'train' or mode =='valid':
         shuffle = True
     else:
-        shuffle = True
+        shuffle = False
 
     if balance_dataset==True:
         sampler = class_balancing(dataset=dataset, dataset_path=data_path)
