@@ -8,7 +8,6 @@ from models import densenet
 import com.config as config
 import math
 import os
-import config 
 import time
 from com.colors import COLOR
 import sys

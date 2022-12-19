@@ -10,7 +10,6 @@ For a moment it contains only two classes: Class 0 - No water, Class 1 - has wat
 
 1. [Used Datasets](doc/datasets.md)</br>
 1. [Test, Train and Validation sets](doc/trainset.md)</br>
-1. [Jupyter-lab implementation of DenseNet](doc/data.md)</br>
-1. [EfficientNet](doc/efficientNet.md)</br>
+1. [Used Models](doc/efficientNet.md)</br>
 1. [Results](doc/data.md)</br>
 1. [Quick start](doc/gui.md)</br>

@@ -13,9 +13,8 @@ import matplotlib.pyplot as plt
 #from dataset import get_datasets
 #from dataset import get_data_loaders
 #from dataset import show_batch_grid
-from models import efficientnet
-from models import densenet
-import config
+from models import models
+import com.config as config
 import time
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = False
@@ -23,7 +22,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = False
 
 from dataset import load_dataset
 import numpy as np
-import utils
+import com.utils as utils
 print(config.CFG.epochs)
 import engine
 
@@ -79,7 +78,9 @@ if __name__ == '__main__':
     train_set, train_loader = load_dataset(train_path, mode='train', balance_dataset=True)
     valid_set, valid_loader = load_dataset(train_path, mode='valid', balance_dataset=True)
     
-    model, total_params = utils.build_model(device, version=model_name)
+    model, total_params = models.build_model(model_name, device)
+    
+    
     print(f"[INFO]:{model_name} :{total_params} parameters")
     model.to(device)
     criterion = utils.define_loss(device)
@@ -116,7 +117,7 @@ if __name__ == '__main__':
     __trainer.fit(train_loader, valid_loader, last_checkpoint, best_checkpoint, log_path)
 
 
-    model_A, total_params_A = utils.build_model(device, version=model_name)
+    model_A, total_params_A  = models.build_model(model_name, device)
     checkpoint = torch.load(last_checkpoint)
     model_A.load_state_dict(checkpoint['model_state_dict'])
     train_loss = checkpoint['train_loss']
@@ -124,17 +125,6 @@ if __name__ == '__main__':
     valid_loss = checkpoint['valid_loss']
     valid_acc = checkpoint['valid_acc']
     utils.save_plots(train_acc, valid_acc, train_loss, valid_loss, figure_name=last_checkpoint)
-
-
-
-    model_B, total_params_B = utils.build_model(device, version=model_name)
-    checkpoint_B = torch.load(best_checkpoint)
-    model_A.load_state_dict(checkpoint_B['model_state_dict'])
-    train_loss_B = checkpoint_B['train_loss']
-    train_acc_B = checkpoint_B['train_acc']
-    valid_loss_B = checkpoint_B['valid_loss']
-    valid_acc_B = checkpoint_B['valid_acc']
-    utils.save_plots(train_acc_B, valid_acc_B, train_loss_B, valid_loss_B, figure_name=best_checkpoint)
 
     plt.show()
 

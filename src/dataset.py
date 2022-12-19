@@ -8,7 +8,7 @@ import sys
 import os
 import glob
 import numpy as np
-import config
+import com.config as config
 import cv2
 import matplotlib.pyplot as plt
 #############

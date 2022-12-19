@@ -11,6 +11,28 @@ import torch
 import torch.nn as nn
 from math import ceil
 
+#URL ported from https://pytorch.org/vision/0.12/_modules/torchvision/models/efficientnet.html
+try:
+    from torch.hub import load_state_dict_from_url
+except ImportError:
+    from torch.utils.model_zoo import load_url as load_state_dict_from_url
+
+__all__ = ['EfficientNet', 'efficientnet_b0', 'efficientnet_b1', 'efficientnet_b2', 'efficientnet_b3', 'efficientnet_b4',
+'efficientnet_b5', 'efficientnet_b6', 'efficientnet_b7']
+
+model_urls = {
+    # Weights ported from https://github.com/rwightman/pytorch-image-models/
+    "efficientnet_b0": "https://download.pytorch.org/models/efficientnet_b0_rwightman-3dd342df.pth",
+    "efficientnet_b1": "https://download.pytorch.org/models/efficientnet_b1_rwightman-533bc792.pth",
+    "efficientnet_b2": "https://download.pytorch.org/models/efficientnet_b2_rwightman-bcdf34b7.pth",
+    "efficientnet_b3": "https://download.pytorch.org/models/efficientnet_b3_rwightman-cf984f9c.pth",
+    "efficientnet_b4": "https://download.pytorch.org/models/efficientnet_b4_rwightman-7eb33cd5.pth",
+    # Weights ported from https://github.com/lukemelas/EfficientNet-PyTorch/
+    "efficientnet_b5": "https://download.pytorch.org/models/efficientnet_b5_lukemelas-b6417697.pth",
+    "efficientnet_b6": "https://download.pytorch.org/models/efficientnet_b6_lukemelas-c76e70fd.pth",
+    "efficientnet_b7": "https://download.pytorch.org/models/efficientnet_b7_lukemelas-dcc49843.pth",}
+
+
 base_model = [
     # expand_ratio, channels, repeats, stride, kernel_size
     [1, 16, 1, 1, 3],
@@ -184,5 +206,102 @@ def test():
 
     print(model(x).shape, x.shape) # (num_examples, num_classes)
 
-test()
+def _efficentnet(version : str, num_classes: int, pretrained : bool,  progress : bool):
+    '''
+    version is a model name
+    '''
+    print(version)
+    model = EfficientNet(version=version,num_classes= num_classes,)
+    if pretrained:
+        if model_urls.get(version, None) is None:
+            raise ValueError(f"No checkpoint is available for model type {version}")
+        state_dict = load_state_dict_from_url(model_urls[version], progress=progress)
+        model.load_state_dict(state_dict)
+    return model
+
+def efficientnet_b0(num_classes: int, pretrained : bool = False, progress : bool = True,
+              **kwargs):
+    """
+        Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+    return _efficentnet("efficientnet_b0", num_classes, pretrained, progress)
+
+
+def efficientnet_b1(num_classes: int, pretrained : bool = False, progress : bool = True,
+              **kwargs):
+    """
+        Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+
+    return _efficentnet("efficientnet_b1", num_classes, pretrained, progress)
+
+
+def efficientnet_b2(num_classes: int, pretrained : bool = False, progress : bool = True,
+              **kwargs):
+    """
+        Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+
+    return _efficentnet("efficientnet_b2", num_classes, pretrained, progress)
+
+def efficientnet_b3(num_classes: int, pretrained : bool = False, progress : bool = True,
+              **kwargs):
+    """
+        Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+
+    return _efficentnet("efficientnet_b3", num_classes, pretrained, progress)
+
+def efficientnet_b4(num_classes: int, pretrained : bool = False, progress : bool = True,
+              **kwargs):
+    """
+        Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+
+    return _efficentnet("efficientnet_b4", num_classes, pretrained, progress)
+
+def efficientnet_b5(num_classes: int, pretrained : bool = False, progress : bool = True,
+              **kwargs):
+    """
+        Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+
+    return _efficentnet("efficientnet_b5", num_classes, pretrained, progress)
+
+def efficientnet_b6(num_classes: int, pretrained : bool = False, progress : bool = True,
+              **kwargs):
+    """
+        Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+
+    return _efficentnet("efficientnet_b6", num_classes, pretrained, progress)
+
+def efficientnet_b7(num_classes: int, pretrained : bool = False, progress : bool = True,
+              **kwargs):
+    """
+        Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+
+    return _efficentnet("efficientnet_b7", num_classes, pretrained, progress)
+
+
+#test()
+
+
 
