@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 class CFG:
     
-    epochs =100      	    # number epoch to train model
+    epochs =300      	    # number epoch to train model
     learning_rate = 1e-3    # learning rate (How NN updates the gradient)
     batch_size = 32 	    # 16 images in one batchs
     img_size = 224  	    # Resize all images to be 256x256

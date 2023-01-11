@@ -43,18 +43,19 @@ if __name__ == '__main__':
     args = arg_parser()
     print(args)
     print('--------------------------------')
-    DATA = args['path']
-    dataset = args['dataset']
+    DATA = args['dataset']
+    path = args['path']
     model_name = args['model']
-
+    dataset = f'{path}/{DATA}'
+    print(f'dataset: {dataset}')
     train_path = os.path.join(dataset, 'train')
     valid_path = os.path.join(dataset, 'valid')
     #test_path = os.path.join(dataset, 'test')
-    model_name = args['model']
     check_if_dir_existed(train_path)
     #check_if_dir_existed(test_path)
     check_if_dir_existed(valid_path)
     output_paths = os.path.join(os.getcwd(), 'outputs')
+    print(f"output_pats {output_paths}")
     check_if_dir_existed(output_paths, True)
     last_checkpoint = f"{output_paths}/{args['model']}_{args['dataset']}_{'last_checkpoint'}.bin"
     best_checkpoint = f"{output_paths}/{args['model']}_{args['dataset']}_{'best_checkpoint'}.bin"
@@ -64,11 +65,11 @@ if __name__ == '__main__':
     log_path = f"{output_paths}/{args['model']}_{args['dataset']}_{'log'}.txt"
     
     print('###########################')
-    print(last_checkpoint)
-    print(best_checkpoint)
-    print(log_path)
-    print(figure_name_last)
-    print(figure_name_best)
+    print(f"last_checkpoint : {last_checkpoint}")
+    print(f"best_checkpoint : {best_checkpoint}")
+    print(f"log_path : {log_path}")
+    print(f"figure_name_last : {figure_name_last}")
+    print(f"figure_name_best : {figure_name_best}")
     print('###########################')    
 
 
@@ -100,6 +101,7 @@ if __name__ == '__main__':
         min_lr=1e-8,
         eps=1e-08
     )
+    print("Trainer Run")
     __trainer = engine.Trainer(
                         model, 
                         model_name, 

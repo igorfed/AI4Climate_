@@ -11,11 +11,11 @@ import cv2
 
 def arg_parser():
 	parser = argparse.ArgumentParser(description = 'This is a random selection of images program')
-	parser.add_argument('-source', '--source', required=True, type=str, help='Source of images')
-	parser.add_argument('-dest', '--dest', required=False, type=str, help='Destination of images')
-	parser.add_argument('-type', '--type', required=True, type=str, help='Type of the dataset [mobile, desktop, roadway, eu2013 ...]')
+	parser.add_argument('-s', '--source', required=True, type=str, help='Source of images')
+	parser.add_argument('-d', '--dest', required=True, type=str, help='Destination of images')
+	parser.add_argument('-t', '--type', required=True, type=str, help='Type of the dataset [mobile, desktop, roadway, eu2013 ...]')
 
-	return parser.parse_args()
+	return vars(parser.parse_args())
 
 def arg_parser_eu():
     parser = argparse.ArgumentParser(description = 'This is a program to pars and annotate eu-flood-2013-small images')
@@ -61,7 +61,7 @@ def currentTime2Millisec():
 
 class DATASETS():
 
-	def __init__(self, source, dest, type):
+	def __init__(self, source, dest, type, csv_file):
 		t = COLOR.Green + 80 * '=' + COLOR.END
 		self.valid_img = [".jpg", "jpeg", ".png"]
 		print(t)
@@ -72,6 +72,7 @@ class DATASETS():
 		self.type = type
 		self.source_dir = source
 		self.dest_dir = dest
+		self.landmarks_frame = pd.read_csv(csv_file) 
 		self.files2list()
 		self.dict_CSV = {}
 

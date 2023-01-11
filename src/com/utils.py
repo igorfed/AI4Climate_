@@ -12,6 +12,13 @@ import time
 from com.colors import COLOR
 import sys
 
+
+from sklearn import decomposition
+from sklearn import manifold
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import ConfusionMatrixDisplay
+
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 def slice_plot(data_loader, nrow, ncol, fig_title):
@@ -221,3 +228,14 @@ def select_device(gpu):
 
 
      
+
+
+def plot_confusion_matrix(labels, pred_labels, classes):
+
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(1, 1, 1)
+    cm = confusion_matrix(labels, pred_labels)
+    cm = ConfusionMatrixDisplay(cm, display_labels=classes)
+    cm.plot(values_format='d', cmap='Blues', ax=ax)
+    
+    plt.xticks(rotation=20)     
