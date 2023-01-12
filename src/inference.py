@@ -31,6 +31,13 @@ import torch.nn.functional as F
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 
+def normalize_image(image):
+    image_min = image.min()
+    image_max = image.max()
+    image.clamp_(min=image_min, max=image_max)
+    image.add_(-image_min).div_(image_max - image_min + 1e-5)
+    return image
+
 def arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-p",   "--path",       type=str, required=False, help="path to the dataset")
@@ -93,12 +100,59 @@ def save_images(model, test_path, num_images_to_plot=10):
             plt.text(10, 50, textstr, fontsize=8, verticalalignment='top', bbox=props)
         
             plt.axis(False)
-            #plt.savefig(image_path)
+            plt.savefig(image_path)
             i = i +1
+
+def correct_no_correct(images, labels, probs, pred_labels):
+    corrects = torch.eq(labels, pred_labels)
+    incorrect_examples = []
+    correct_examples = []
+    for image, label, prob, correct in zip(images, labels, probs, corrects):
+        if not correct:
+            incorrect_examples.append((image, label, prob))
+        if correct:
+            correct_examples.append((image, label, prob))
+    incorrect_examples.sort(reverse=True, key=lambda x: torch.max(x[2], dim=0).values)
+    #correct_examples.sort(reverse=True, key=lambda x: torch.max(x[2], dim=0).values)
+    return correct_examples, incorrect_examples
+
+
+
+
+def plot_most_incorrect(fname, incorrect, classes, n_images=9, normalize=True):
+
+    rows = int(np.sqrt(n_images))
+    cols = int(np.sqrt(n_images))
+    figure_name =  f'{fname}'
+    fig = plt.figure(figure_name, figsize=(30, 20), dpi = 80)
+
+    for i in range(rows*cols):
+
+        ax = fig.add_subplot(rows, cols, i+1)
+
+        image, true_label, probs = incorrect[i]
+        image = image.permute(1, 2, 0)
+        true_prob = probs[true_label]
+        incorrect_prob, incorrect_label = torch.max(probs, dim=0)
+        true_class = classes[true_label]
+        incorrect_class = classes[incorrect_label]
+
+        if normalize:
+            image = normalize_image(image)
+
+        ax.imshow(image.cpu().numpy())
+        ax.set_title(f'true label: {true_class} ({true_prob:.3f})\n'
+                     f'pred label: {incorrect_class} ({incorrect_prob:.3f})')
+
+        #ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=12, verticalalignment='top', bbox=props)
+
+        ax.grid(False)
+
+    fig.subplots_adjust(hspace=0.4)
 
 
 def get_predictions(model, iterator, device):
-
+    # Examining the Model
     model.eval()
     images = []
     labels = []
@@ -154,13 +208,20 @@ if __name__ == '__main__':
     output_paths = os.path.join(os.getcwd(), 'outputs')
     output_images = os.path.join(output_paths, 'images')
     check_if_dir_existed(output_images, True)
-    ###################save_images(model, test_path, num_images_to_plot=10)
+    ##################save_images(model, test_path, num_images_to_plot=16)
     images, labels, probs = get_predictions(model, test_loader, device)
     
+    # for each prediction we get the predicted class.
+
     pred_labels = torch.argmax(probs, 1)
+
     print('labels', labels)
     print('pred_labels', pred_labels, len(pred_labels), len(probs), len(images))
+    
+    # plot the confusion matrix
+
     utils.plot_confusion_matrix(labels, pred_labels, config.CFG.class_name)
+
     tn, fp, fn, tp = confusion_matrix(labels, pred_labels, labels=[0,1]).ravel()
     from sklearn.metrics import classification_report
     print(classification_report(labels, pred_labels))
@@ -172,6 +233,15 @@ if __name__ == '__main__':
     acc = (tp+tn)/(tp+tn+fp+fn)
     print(f'Overal accuracy {acc:.3f}')
     print(f'Miscalculation {1 - acc:.3f}')
+
+    # Correct vs non-correct
+    
+    correct_examples, incorrect_examples = correct_no_correct(images, labels, probs, pred_labels)
+
+    
+    plot_most_incorrect('Incorrect examples', incorrect_examples, config.CFG.class_name, 16,  True)
+    plot_most_incorrect('Correct examples', correct_examples,config.CFG.class_name, 36, True)
+
     plt.show()
 
 

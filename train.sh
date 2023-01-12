@@ -1,11 +1,12 @@
 #!/bin/bash
 echo '----------------------------------------'
-dataset='/media/igofed/SSD_2T/DATASETS/weather_3'
-model='densenet121'
+dataset='weather_2'
+model='efficientnet_b0'
+path='/media/igofed/SSD_2T/DATASETS/'
 
 
-
-echo '[PARSER]  Source Data Folder  :' $'\t' $dataset
+echo '[PARSER]  Source Data Folder  :' $'\t' $path
+echo '[PARSER]              DATA    :' $'\t' $dataset
 echo '[PARSER]  CNN model           :' $'\t' $model
 
-python3 src/train.py --dataset $dataset --model $model #--split
+python3 src/train.py --dataset $dataset --model $model --path $path #--split
