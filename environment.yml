@@ -1,0 +1,24 @@
+name: ai4ci
+channels:
+  - pytorch
+  - nvidia
+dependencies:
+  - python==3.9
+  - pip
+  - numpy=1.20
+  - scipy=1.7.1
+  - cudatoolkit=11.1
+  - matplotlib=3.4.2
+  - pip:
+    - pillow==9.2
+    - tim==0.5
+    - timm==0.6.7
+    - torch==1.7.1
+    - torchsummary==1.5.1
+    - torchvision==0.8.2
+    - tqdm==4.64
+    - scikit-image==0.19
+    - scikit-learn==1.0.2
+    - opencv-python-headless
+    - typing
+    - pandas==1.4.2

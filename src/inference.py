@@ -31,19 +31,14 @@ import torch.nn.functional as F
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 
-def normalize_image(image):
-    image_min = image.min()
-    image_max = image.max()
-    image.clamp_(min=image_min, max=image_max)
-    image.add_(-image_min).div_(image_max - image_min + 1e-5)
-    return image
 
 def arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-p",   "--path",       type=str, required=False, help="path to the dataset")
     parser.add_argument("-d",   "--dataset",    type=str, required=False, help="type of the dataset")
     parser.add_argument("-md",  "--model",      type=str, required=False, help="type of model")
-    parser.add_argument("-pth",  "--pth",      type=str, required=False, help="path to pretrained model")
+    parser.add_argument("-pth",  "--pth",       type=str, required=False, help="path to pretrained model")
+    parser.add_argument("-plot", "--plot",      type=str, required=False, help="Do you want to plot")
 
     return vars(parser.parse_args())
 
@@ -119,36 +114,6 @@ def correct_no_correct(images, labels, probs, pred_labels):
 
 
 
-def plot_most_incorrect(fname, incorrect, classes, n_images=9, normalize=True):
-
-    rows = int(np.sqrt(n_images))
-    cols = int(np.sqrt(n_images))
-    figure_name =  f'{fname}'
-    fig = plt.figure(figure_name, figsize=(30, 20), dpi = 80)
-
-    for i in range(rows*cols):
-
-        ax = fig.add_subplot(rows, cols, i+1)
-
-        image, true_label, probs = incorrect[i]
-        image = image.permute(1, 2, 0)
-        true_prob = probs[true_label]
-        incorrect_prob, incorrect_label = torch.max(probs, dim=0)
-        true_class = classes[true_label]
-        incorrect_class = classes[incorrect_label]
-
-        if normalize:
-            image = normalize_image(image)
-
-        ax.imshow(image.cpu().numpy())
-        ax.set_title(f'true label: {true_class} ({true_prob:.3f})\n'
-                     f'pred label: {incorrect_class} ({incorrect_prob:.3f})')
-
-        #ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=12, verticalalignment='top', bbox=props)
-
-        ax.grid(False)
-
-    fig.subplots_adjust(hspace=0.4)
 
 
 def get_predictions(model, iterator, device):
@@ -185,16 +150,17 @@ if __name__ == '__main__':
     path = args['path']
     model_name = args['model']
     model_path = args['pth']
+    enable_plot= bool(args['plot'])
     checkpoint = torch.load(model_path)
     dataset = f'{path}/{DATA}'
-    print(f'dataset: {dataset}')
+    #print(f'dataset: {dataset}')
     test_path = os.path.join(dataset, 'test')
     check_if_dir_existed(test_path)
-    device = 'cpu'#('cuda' if torch.cuda.is_available() else 'cpu')
+    device = 'cpu'
     Color = (COLOR.Blue if torch.cuda.is_available() else COLOR.Red)
     print(f'device{device}')
     test_set, test_loader   = load_dataset(test_path, mode='test', balance_dataset=True)
-    utils.show_batch_grid(test_loader, True, 'test', True)
+    utils.show_batch_grid(test_loader, True, 'test', enable_plot=False, figure_save=True)
     
     # pretrained
     model, total_params = models.build_model(model_name, device)
@@ -204,7 +170,7 @@ if __name__ == '__main__':
     valid_loss = checkpoint['valid_loss']
     valid_acc = checkpoint['valid_acc']
     model.eval()
-    utils.save_plots(train_acc, valid_acc, train_loss, valid_loss, figure_name=model_path)
+    utils.save_plots(train_acc, valid_acc, train_loss, valid_loss, enable_plot=False, figure_name=model_path)
     output_paths = os.path.join(os.getcwd(), 'outputs')
     output_images = os.path.join(output_paths, 'images')
     check_if_dir_existed(output_images, True)
@@ -220,7 +186,7 @@ if __name__ == '__main__':
     
     # plot the confusion matrix
 
-    utils.plot_confusion_matrix(labels, pred_labels, config.CFG.class_name)
+    utils.plot_confusion_matrix(labels, pred_labels, config.CFG.class_name, model_name, enable_plot=False, figure_save=True)
 
     tn, fp, fn, tp = confusion_matrix(labels, pred_labels, labels=[0,1]).ravel()
     from sklearn.metrics import classification_report
@@ -239,61 +205,15 @@ if __name__ == '__main__':
     correct_examples, incorrect_examples = correct_no_correct(images, labels, probs, pred_labels)
 
     
-    plot_most_incorrect('Incorrect examples', incorrect_examples, config.CFG.class_name, 16,  True)
-    plot_most_incorrect('Correct examples', correct_examples,config.CFG.class_name, 36, True)
-
-    plt.show()
-
-
-
-# Load the trained model.
-#model = models.build_model('efficentnet_b0', device)
-#checkpoint = torch.load('../outputs/model_pretrained_True.pth', map_location=device)
-#print('Loading trained model weights...')
-#model.load_state_dict(checkpoint['model_state_dict'])
-
-# Get all the test image paths.
-#all_image_paths = glob.glob(f"{DATA_PATH}/*")
-# Iterate over all the images and do forward pass.
-#for image_path in all_image_paths:
-    # Get the ground truth class name from the image path.
- #   gt_class_name = image_path.split(os.path.sep)[-1].split('.')[0]
-    # Read the image and create a copy.
-    #image = cv2.imread(image_path)
-    #orig_image = image.copy()
+    utils.plot_most_incorrect('incorrect_examples', incorrect_examples, config.CFG.class_name, 16, model_name, True, figure_save=True)
+    utils.plot_most_incorrect('correct_examples', correct_examples,config.CFG.class_name, 36, model_name, True, figure_save=True)
+    print("ENABLE_plot", enable_plot, type(enable_plot))
+    if enable_plot==False:
+        plt.show()
     
-    # Preprocess the image
-    #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    #transform = transforms.Compose([
-        #transforms.ToPILImage(),
-        #transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
-        #transforms.ToTensor(),
-        #transforms.Normalize(
-            #mean=[0.485, 0.456, 0.406],
-            #std=[0.229, 0.224, 0.225]
-        #)
-    #])
-    #image = transform(image)
-    #image = torch.unsqueeze(image, 0)
-    #image = image.to(device)
+
+
+    print('done')
     
-    # Forward pass throught the image.
-#    outputs = model(image)
-    #outputs = outputs.detach().numpy()
-    #pred_class_name = class_names[np.argmax(outputs[0])]
-    #print(f"GT: {gt_class_name}, Pred: {pred_class_name.lower()}")
-    # Annotate the image with ground truth.
-    #cv2.putText(
-     #   orig_image, f"GT: {gt_class_name}",
-      #  (10, 25), cv2.FONT_HERSHEY_SIMPLEX,
-       # 1.0, (0, 255, 0), 2, lineType=cv2.LINE_AA
-    #)
-    # Annotate the image with prediction.
-    #cv2.putText(
-     #   orig_image, f"Pred: {pred_class_name.lower()}",
-      #  (10, 55), cv2.FONT_HERSHEY_SIMPLEX,
-       # 1.0, (100, 100, 225), 2, lineType=cv2.LINE_AA
-    #) 
-    #cv2.imshow('Result', orig_image)
-    #cv2.waitKey(0)
-    #cv2.imwrite(f"../outputs/{gt_class_name}.png", orig_image)
+    
+

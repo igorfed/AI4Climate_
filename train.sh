@@ -1,7 +1,7 @@
 #!/bin/bash
 echo '----------------------------------------'
 dataset='weather_2'
-model='efficientnet_b0'
+model='densenet121'
 path='/media/igofed/SSD_2T/DATASETS/'
 
 

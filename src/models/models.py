@@ -12,7 +12,7 @@ def build_model(model_type: str,
                 progress : bool=False) -> [torch.nn.Module, torch.nn.Module]:
     dense_model_names = sorted(
         name for name in densenet.__dict__ if name.islower() and not name.startswith("__") and callable(densenet.__dict__[name]))
-
+    print('Model Name:', model_type )
     efficient_model_names = sorted(
         name for name in efficientnet.__dict__ if name.islower() and not name.startswith("__") and callable(efficientnet.__dict__[name]))
 
