@@ -32,6 +32,7 @@ def arg_parser():
     parser.add_argument("-p",   "--path",       type=str, required=False, help="path to the dataset")
     parser.add_argument("-d",   "--dataset",    type=str, required=False, help="type of the dataset")
     parser.add_argument("-md",  "--model",      type=str, required=False, help="type of model")
+    parser.add_argument("-plt", "--plot",       action='store_true', help="Do you want to plot")
 
     return vars(parser.parse_args())
 
@@ -46,6 +47,8 @@ if __name__ == '__main__':
     DATA = args['dataset']
     path = args['path']
     model_name = args['model']
+    enable_plot= args['plot']
+
     dataset = f'{path}/{DATA}'
     print(f'dataset: {dataset}')
     train_path = os.path.join(dataset, 'train')
@@ -88,7 +91,9 @@ if __name__ == '__main__':
     print(COLOR.BGreen, "Define all loss functions successfully.", COLOR.END)
     optimizer = utils.define_optimizer(model)
     print(COLOR.BGreen,"Define all optimizer functions successfully.", COLOR.END)
-    utils.show_batch_grid(train_loader, True, 'train', figure_save=True)
+    
+    utils.show_batch_grid(train_loader, True, 'train', enable_plot, figure_save=True)
+    
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau
     scheduler_params = dict(
         mode='min',
@@ -126,7 +131,9 @@ if __name__ == '__main__':
     train_acc = checkpoint['train_acc']
     valid_loss = checkpoint['valid_loss']
     valid_acc = checkpoint['valid_acc']
-    utils.save_plots(train_acc, valid_acc, train_loss, valid_loss, figure_name=last_checkpoint)
-
-    plt.show()
+    utils.save_plots(train_acc, valid_acc, train_loss, valid_loss, enable_plot, figure_name=last_checkpoint)
+    if enable_plot:
+        plt.show()
+    
+    print('Done')
 

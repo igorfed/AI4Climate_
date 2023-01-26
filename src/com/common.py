@@ -1,6 +1,5 @@
 import os
 from com.colors import COLOR
-from PIL import Image
 import numpy as np
 import pandas as pd
 
@@ -58,8 +57,10 @@ class SOURCE_DATASETS():
 			return 0 if np.isnan(x) else x
 
 		dateTimeEvent = self.landmarks_frame.iloc[i,0]
+		################### lat, lon ###########################
 		lat = int(float(self.landmarks_frame.iloc[i,1])*1e4)/1e4
 		lon = int(float(self.landmarks_frame.iloc[i,2])*1e4)/1e4
+		################### id #################################
 		id = int(self.landmarks_frame.iloc[i,3])
 		water_detail1 = int(isnan(self.landmarks_frame.iloc[i,4]))
 		water_detail2 = int(isnan(self.landmarks_frame.iloc[i,5]))

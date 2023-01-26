@@ -10,16 +10,18 @@ import math
 import os
 import time
 from com.colors import COLOR
+from com.common_packages import check_if_file_existed
 import sys
 
 
-from sklearn import decomposition
-from sklearn import manifold
+#from sklearn import decomposition
+#from sklearn import manifold
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+timestr = time.strftime("%Y%m%d-%H%M%S")
 
 def slice_plot(data_loader, nrow, ncol, fig_title):
         mean, std = torch.FloatTensor(config.CFG.mean), torch.FloatTensor(config.CFG.mean)
@@ -58,7 +60,7 @@ def save_model(epochs, model, output, optimizer, criterion, pretrained):
 
 
 
-def save_plots(train_acc, valid_acc, train_loss, valid_loss, figure_name=None, figure_save=False):
+def save_plots(train_acc, valid_acc, train_loss, valid_loss, enable_plot, figure_name=None, figure_save=False):
     """
     Function to save the loss and accuracy plots to disk.
     """
@@ -75,6 +77,8 @@ def save_plots(train_acc, valid_acc, train_loss, valid_loss, figure_name=None, f
     plt.legend(loc="lower left")
     if figure_save:
         plt.savefig(f"{figure_name}.png")
+    if enable_plot:
+        plt.show()
 
 
 def check_if_dir_existed(dir_name, create=False):
@@ -89,7 +93,8 @@ def check_if_dir_existed(dir_name, create=False):
 def show_batch_grid(
                 dataloader  : torch.utils.data.DataLoader, 
                 balance     : bool, 
-                mode        : str,  
+                mode        : str,
+                enable_plot : bool,  
                 figure_save : bool):
     """
     plot grid of dataloader
@@ -141,13 +146,13 @@ def show_batch_grid(
         figures = 'figures'
         figures = os.path.join(os.getcwd(), figures)
         check_if_dir_existed(figures, True)
-        timestr = time.strftime("%Y%m%d-%H%M%S")
-        print(f"{figures}/{b}_{mode}_{timestr}.png")
-        plt.savefig(f"{figures}/{b}_{mode}_{timestr}.png")
+        
+        f = f"{figures}/{b}_{mode}_{timestr}.png"
+        print(f)
+        plt.savefig(f)
+        check_if_file_existed(f)
 
     
-
-
 
 def convertImages(source, destination):
     import os,cv2
@@ -230,12 +235,70 @@ def select_device(gpu):
      
 
 
-def plot_confusion_matrix(labels, pred_labels, classes):
+def plot_confusion_matrix(labels, pred_labels, classes, model_name, enable_plot, figure_save):
 
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(1, 1, 1)
     cm = confusion_matrix(labels, pred_labels)
     cm = ConfusionMatrixDisplay(cm, display_labels=classes)
     cm.plot(values_format='d', cmap='Blues', ax=ax)
-    
     plt.xticks(rotation=20)     
+
+    if figure_save:
+        figures = 'figures'
+        figures = os.path.join(os.getcwd(), figures)
+        check_if_dir_existed(figures, True)
+        
+        f = f"{figures}/confusion_{model_name}_{timestr}.png"
+        print()
+        plt.savefig(f)
+        check_if_file_existed(f)
+    if enable_plot:
+        plt.show()
+
+def plot_most_incorrect(fname, incorrect, classes, n_images, model_name, normalize=True, figure_save=True):
+    def normalize_image(image):
+        image_min = image.min()
+        image_max = image.max()
+        image.clamp_(min=image_min, max=image_max)
+        image.add_(-image_min).div_(image_max - image_min + 1e-5)
+        return image
+
+    rows = int(np.sqrt(n_images))
+    cols = int(np.sqrt(n_images))
+    figure_name =  f'{fname}'
+    fig = plt.figure(figure_name, figsize=(30, 20), dpi = 80)
+
+    for i in range(rows*cols):
+
+        ax = fig.add_subplot(rows, cols, i+1)
+
+        image, true_label, probs = incorrect[i]
+        image = image.permute(1, 2, 0)
+        true_prob = probs[true_label]
+        incorrect_prob, incorrect_label = torch.max(probs, dim=0)
+        true_class = classes[true_label]
+        incorrect_class = classes[incorrect_label]
+
+        if normalize:
+            image = normalize_image(image)
+
+        ax.imshow(image.cpu().numpy())
+        ax.set_title(f'true label: {true_class} ({true_prob:.3f})\n'
+                     f'pred label: {incorrect_class} ({incorrect_prob:.3f})')
+
+        #ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=12, verticalalignment='top', bbox=props)
+
+        ax.grid(False)
+    fig.subplots_adjust(hspace=0.4)
+
+    if figure_save:
+        figures = 'figures'
+        figures = os.path.join(os.getcwd(), figures)
+        check_if_dir_existed(figures, True)
+        
+        f = f"{figures}/{fname}_{model_name}_{timestr}.png"
+        print(f)
+        plt.savefig(f)
+        check_if_file_existed(f)
+    

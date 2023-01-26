@@ -10,7 +10,6 @@ from com.com_csv import CSV
 from com.common_packages import getCurrentTime
 from com.common_packages import currentTime2Millisec
 from com.colors import COLOR
-import json
 from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np

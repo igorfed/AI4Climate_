@@ -1,9 +1,8 @@
-from turtle import color
 import torch
-from torchvision import datasets
+#from torchvision import datasets
 from torchvision import transforms
-import torchvision.transforms.functional as F
-from torch.utils.data import DataLoader
+#import torchvision.transforms.functional as F
+#from torch.utils.data import DataLoader
 import sys
 import os
 import glob
@@ -21,7 +20,7 @@ from com.common_packages import check_if_file_existed
 import argparse
 import com.utils as utils
 
-import random
+#import random
 
 
 def arg_parser():

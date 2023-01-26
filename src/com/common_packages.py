@@ -1,13 +1,11 @@
-from email.mime import image
+
 import os
 import argparse
 from com.colors import COLOR
 from PIL import Image
-from skimage import io, transform
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import cv2
 
 def arg_parser():
 	parser = argparse.ArgumentParser(description = 'This is a random selection of images program')
