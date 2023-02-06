@@ -37,8 +37,6 @@ def arg_parser():
 	return vars(parser.parse_args())
 
 
-
-
 def main():
 
 	time = getCurrentTime()
@@ -85,7 +83,7 @@ def main():
 		
 		return 	path2image, path2csv
 	
-	### Check source images and annotations
+	
 	args = arg_parser()	
 	source_path2image, source_path2csv = source_data(source=args['source'])
 	print(f"Path to images : {check_if_dir_existed(source_path2image)}" )
@@ -110,7 +108,7 @@ def main():
 	for i in range(10):
 		sample = __dataset[i]
 
-		#print(sample['has_water'], sample['dateTimeEvent'], sample['lat'], sample['lon'])
+		
 		#fname = f"desktop_{sample['has_water']}_{sample['dateTimeEvent']}_{sample['lat']}_{sample['lon']}.png"
 
 		#print(fname)

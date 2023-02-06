@@ -409,3 +409,8 @@ def random_selection(source_img, sourse_json, dest, csv_name, no_of_files):
 		csv_file.close()
 	#print(dict_CSV)
 	print('csv done')
+
+
+def trunc(a, x):
+    int1 = int(a * (10**x))/(10**x)
+    return float(int1)

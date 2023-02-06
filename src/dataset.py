@@ -263,3 +263,66 @@ if __name__ == '__main__':
     check_if_dir_existed(args['dataset'])
     main(args)
 
+
+
+class CustomTestLoader(torch.utils.data.Dataset):
+
+    """Define test dataset loading methods.
+    Args:
+        image_dir (str) : test dataset address.
+        image_size (int): Image size.
+        image rotate (int)
+        mean value list [float, float, float]
+        std value list [float, float, float]
+        mode (str): Data set loading method, the training data set is for data enhancement,
+            and the verification data set is not for data enhancement.
+    """
+    def __init__(self, 
+                image_dir   : str, 
+                image_size  : int,  # from config CFG
+                #rotate      : int,  # rotation int
+                mean        : list, # mean value List[int, int, int]
+                std         : list, # std value List[int, int, int]
+                ) -> None:
+        super(CustomTestLoader, self).__init__()
+
+        self.paths = list(glob.glob(f"{image_dir}/*"))
+        self.image_size = image_size
+        self.delimiter = config.delimiter
+        self.mean = mean
+        self.std = std
+        self.img_extension = ("jpg", "jpeg", "png", "bmp", "tif", "tiff")
+        self.transform = transforms.Compose([
+                        transforms.Resize((config.CFG.img_size, config.CFG.img_size)),
+                        transforms.ToTensor(), 
+                        transforms.Normalize(
+                            mean=config.CFG.mean, 
+                            std=config.CFG.std)                
+                        ])
+        
+        ########### Classes not Defined #####################
+        #self.classes, self.class_to_idx = self.find_classes(image_dir)
+        #print(COLOR.Green + 'Classes', self.class_to_idx ,  COLOR.END)
+
+    def __len__(self) -> int:
+        "Returns the total number of samples."
+        return len(self.paths)
+   
+   
+    def load_image(self, index: int) -> Image.Image:
+        "Opens an image via a path and returns it."
+        image_path = self.paths[index]
+        image = cv2.imread(image_path)[...,::-1]
+        return Image.fromarray(image)
+
+
+    def __getitem__(self, index: int)-> Tuple[torch.Tensor, str, Image.Image]:#Image.Image
+        
+        if torch.is_tensor(index):
+            index = index.tolist()
+
+        self.image_dir, self.image_name = self.paths[index].split(self.delimiter)[-2:]
+        self.image = self.load_image(index)
+        img = self.transform(self.image)
+        return img, self.image_name, self.image
+ 
