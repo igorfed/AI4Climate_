@@ -103,7 +103,7 @@ if __name__ == '__main__':
     model_path = args['pth']
     enable_plot= bool(args['plot'])
     dataset = f'{path}/{DATA}'
-    test_path = os.path.join(dataset, 'test')
+    test_path = os.path.join(dataset, 'test_')
     check_if_dir_existed(test_path)
     device = 'cpu'
     checkpoint = torch.load(model_path)    
@@ -148,7 +148,7 @@ if __name__ == '__main__':
         probs = probs.tolist()
         pred_labels = pred_labels.tolist()
         pred_labels = pred_labels[0]
-        probability = trunc(probs[0][pred_labels],2)
+        probability = trunc(probs[0][pred_labels],3)
         image_path = f"{output_images}/{image_name}_{pred_labels}_{probability}.png"
     
 
@@ -164,7 +164,7 @@ if __name__ == '__main__':
     #            ))
     
     #img = config.denormalisation(images[0]).permute(1,2,0)
-    cv2.imwrite(image_path, cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB))
+    
     #plt.imshow(original_image) 
     #plt.text(0.05, 0.95, textstr, fontsize=10, verticalalignment='top', bbox=props)
     #plt.grid(False)
