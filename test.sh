@@ -16,3 +16,4 @@ echo '[PARSER]  Path to trained MDL :' $'\t' $pth
 echo '[PARSER]  Do you want to plot :' $'\t' $plot
 
 python3 src/inference_test.py --dataset $dataset --model $model --path $path --pth $pth --plot $plot 
+#python3 src/inference1.py --dataset $dataset --model $model --path $path --pth $pth --plot $plot 

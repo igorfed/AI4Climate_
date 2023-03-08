@@ -18,7 +18,12 @@ import numpy as np
 from torchvision import transforms
 from PIL import ImageFile, Image
 import torch.nn.functional as F
-
+import com.places365 as places 
+#import load_labels, indoor_outdoor, scene_attribute
+import warnings 
+warnings.filterwarnings("ignore")
+from torch.autograd import Variable as V
+from torchvision import transforms as trn
 def arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-p",   "--path",       type=str, required=False, help="path to the dataset")
@@ -28,6 +33,14 @@ def arg_parser():
     parser.add_argument("-plot", "--plot",      type=str, required=False, help="Do you want to plot")
 
     return vars(parser.parse_args())
+def returnTF():
+    # load the image transformer
+    tf = trn.Compose([
+        trn.Resize((224,224)),
+        trn.ToTensor(),
+        trn.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ])
+    return tf
 
 class CustomTestLoader(torch.utils.data.Dataset):
 
@@ -133,28 +146,116 @@ if __name__ == '__main__':
     #probs = []
 
     # show images
+    # PLACES 
+    classes = places.load_labels(file_name_category='categories_places365.txt')
+    labels_IO = places.indoor_outdoor(file_name_IO = 'IO_places365.txt')
+    labels_attribute, W_attribute = places.scene_attribute(file_name_attribute = 'labels_sunattribute.txt', file_name_W = 'W_sceneattribute_wideresnet18.npy')
+    # load the model
+    
+    places_model = places.load_model(model_file = 'wideresnet18_places365.pth.tar')
+
+    # get the softmax weight
+    params = list(model.parameters())
+    weight_softmax = params[-2].data.numpy()
+    weight_softmax[weight_softmax<0] = 0
+    img_url = 'http://places.csail.mit.edu/demo/6.jpg'
+    os.system('wget %s -q -O test.jpg' % img_url)
+    img = Image.open('test.jpg')
+    tf = returnTF() # image transformer
+    input_img = V(tf(img).unsqueeze(0))
+    window_name = 'Test opencv '
+    figure_name =  f'Type of environment /Indor-Outdoor/ Images in [Class0, Class1]'
+    fig = plt.figure(figure_name, figsize=(30, 20), dpi=80)
+    M, N = 4, 4
+    k = 1
     for i in range(len(dataset)):
         with torch.no_grad():
-            model.eval()
             x, image_name, original_image = dataset[i]
+            
+            X = x.view(1,3,224,224)
+            print(type(x), x.shape)
+            print(type(X), X.shape)
+            print(type(input_img), input_img.shape)
+            # places365
+            places_model.eval()
+            # forward pass
+            
+            logit = places_model.forward(X)
+            h_x = F.softmax(logit, 1).data.squeeze()
+            probs, idx = h_x.sort(0, True)
+            probs = probs.numpy()
+            idx = idx.numpy()
+            # output the IO prediction      
+            io_image = np.mean(labels_IO[idx[:10]]) # vote for the indoor or outdoor
+            if io_image < 0.5:
+                indoor = True
+                print('--TYPE OF ENVIRONMENT: indoor')
+            else:
+                indoor = False
+                print('--TYPE OF ENVIRONMENT: outdoor')
+
+            # output the prediction of scene category
+            print('--SCENE CATEGORIES:')
+            #for i in range(0, 5):
+            #    probs[i] = round(probs[i],2)
+            #    print('{:.3f} -> {}'.format(probs[i], classes[idx[i]]))
+
+            model.eval()
+            #x, image_name, original_image = dataset[i]
             x = x.unsqueeze(dim=0)
             x = x.to(device)
             y_pred = model(x)
             y_prob = F.softmax(y_pred, dim=-1)
             images = x.cpu()
-            probs = y_prob.cpu()
+            myprobs = y_prob.cpu()
+        # generate class activation mapping
+        #CAMs = places.returnCAM(places.features_blobs[0], weight_softmax, [idx[0]])
 
-        pred_labels = torch.argmax(probs, 1)
-        probs = probs.tolist()
-        pred_labels = pred_labels.tolist()
-        pred_labels = pred_labels[0]
-        probability = trunc(probs[0][pred_labels],3)
-        image_path = f"{output_images}/{image_name}_{pred_labels}_{probability}.png"
-    
-
+        
+            
+        if not indoor:
+            pred_labels = torch.argmax(myprobs, 1)
+            myprobs = myprobs.tolist()
+            pred_labels = pred_labels.tolist()
+            pred_labels = pred_labels[0]
+            probability = trunc(myprobs[0][pred_labels],3)
+            image_path = f"{output_images}/{image_name}_{pred_labels}_{probability}.png"
+            print(image_path)
+            cv2.imwrite(image_path, cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB))
+            if k < M*N: 
+                ax = fig.add_subplot(M, N, k)
+                ax.imshow(original_image)
+                print(i, k, M*N, len(dataset))
+                ax.set_aspect('equal')
+                props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+                textstr = '\n'.join((
+                    r'Batch size     : %s' % (config.CFG.batch_size,),        
+                    r'Image in batch : %s' % (k-1),
+                    r'Indoor         : %s' % (indoor),
+                    f'Class          : {classes[idx[0]]}, {classes[idx[1]]}, {classes[idx[2]]}',
+                    f'Water flooding : {pred_labels}, {probability}',
+                    #r'Class         : %s' % (config.CFG.class_name[labels[k-1].numpy()]),
+                    ))
+                ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=12, verticalalignment='top', bbox=props)
+                ax.grid(False)
+                k = k+1            
         print(i, image_path)
-        cv2.imwrite(image_path, cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB))
+
+        if i >k:
+            break
+        else:
+            pass
+        
+        
+        
+    plt.show()
+        #    pass       #cv2.imshow(window_name, cv2.cvtColor(cv2.resize(original_image, None , interpolation=cv2.INTER_CUBIC,  fx=4, fy=4,) , cv2.COLOR_BGR2RGB))
+        #cv2.imwrite(image_path, cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB))
                            
+    #cv2.waitKey(0)
+  
+    # closing all open windows
+    #cv2.destroyAllWindows()
 
     #props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
     #textstr = '\n'.join((
