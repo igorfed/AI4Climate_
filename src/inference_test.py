@@ -171,7 +171,7 @@ if __name__ == '__main__':
     for i in range(len(dataset)):
         with torch.no_grad():
             x, image_name, original_image = dataset[i]
-            
+            print('Image name', image_name)
             X = x.view(1,3,224,224)
             print(type(x), x.shape)
             print(type(X), X.shape)
@@ -213,42 +213,58 @@ if __name__ == '__main__':
 
         
             
+        pred_labels = torch.argmax(myprobs, 1)
+        myprobs = myprobs.tolist()
+        pred_labels = pred_labels.tolist()
+        pred_labels = pred_labels[0]
+        probability = trunc(myprobs[0][pred_labels],3)
+        #image_path = f"{output_images}/{image_name}_{pred_labels}_{probability}.png"
+        
+        
+        #if k < M*N: 
+           # ax = fig.add_subplot(M, N, k)
+           # ax.imshow(original_image)
+           # print(i, k, M*N, len(dataset))
+           # ax.set_aspect('equal')
+          #  props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+         #   textstr = '\n'.join((
+        #            r'Batch size     : %s' % (config.CFG.batch_size,),        
+       #             r'Image in batch : %s' % (k-1),
+      #              r'Indoor         : %s' % (indoor),
+     #               f'Class          : {classes[idx[0]]}, {classes[idx[1]]}, {classes[idx[2]]}',
+    #                f'Water flooding : {pred_labels}, {probability}',
+   #                 #r'Class         : %s' % (config.CFG.class_name[labels[k-1].numpy()]),
+  #                  ))
+ #           ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=12, verticalalignment='top', bbox=props)
+#            ax.grid(False)
+        #batch_size = f'BS : {config.CFG.batch_size}'
+        #img_in_batch = f'Image in B : {k-1}'
+        #imgclass = f'C : {pred_labels}:{probability}'
+        #original_image= cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
+        #cv2.putText(original_image, imgclass, (10,20), cv2.FONT_HERSHEY_SIMPLEX, 
+        #           1, (255, 0, 0), 1, cv2.LINE_AA)
+        #cv2.putText(original_image, img_in_batch, (10,45), cv2.FONT_HERSHEY_SIMPLEX, 
+        #           1, (255, 0, 0), 1, cv2.LINE_AA)
         if not indoor:
-            pred_labels = torch.argmax(myprobs, 1)
-            myprobs = myprobs.tolist()
-            pred_labels = pred_labels.tolist()
-            pred_labels = pred_labels[0]
-            probability = trunc(myprobs[0][pred_labels],3)
-            image_path = f"{output_images}/{image_name}_{pred_labels}_{probability}.png"
-            print(image_path)
-            cv2.imwrite(image_path, cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB))
-            if k < M*N: 
-                ax = fig.add_subplot(M, N, k)
-                ax.imshow(original_image)
-                print(i, k, M*N, len(dataset))
-                ax.set_aspect('equal')
-                props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
-                textstr = '\n'.join((
-                    r'Batch size     : %s' % (config.CFG.batch_size,),        
-                    r'Image in batch : %s' % (k-1),
-                    r'Indoor         : %s' % (indoor),
-                    f'Class          : {classes[idx[0]]}, {classes[idx[1]]}, {classes[idx[2]]}',
-                    f'Water flooding : {pred_labels}, {probability}',
-                    #r'Class         : %s' % (config.CFG.class_name[labels[k-1].numpy()]),
-                    ))
-                ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=12, verticalalignment='top', bbox=props)
-                ax.grid(False)
-                k = k+1            
-        print(i, image_path)
-
-        if i >k:
-            break
+            image_path = f"{output_images}/{image_name}_outdoor_{pred_labels}_{probability}.png"           
         else:
-            pass
+            image_path = f"{output_images}/{image_name}_indoor_{0}_{io_image}.png"           
+        #image_path = f"{output_images}/{image_name}_indoor.png"
+        cv2.imwrite(image_path, cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB))
+
+        #print(i, image_path)
+
+        #if i >k:
+        #    k = k
+            
+            
+        #else:
+        #    k = k+1            
+            
         
+        #plt.show()
         
-        
-    plt.show()
+    
         #    pass       #cv2.imshow(window_name, cv2.cvtColor(cv2.resize(original_image, None , interpolation=cv2.INTER_CUBIC,  fx=4, fy=4,) , cv2.COLOR_BGR2RGB))
         #cv2.imwrite(image_path, cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB))
                            
