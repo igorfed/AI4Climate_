@@ -1,6 +1,6 @@
 #!/bin/bash
 echo '----------------------------------------'
-dataset='weather_2'
+dataset='weather_1'
 model='densenet161'
 path='/mnt/symphony/igofe52_/ai4ci'
 
