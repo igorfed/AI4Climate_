@@ -1,5 +1,8 @@
 # AI4Climate project
 
+
+conda env create -f environment2.yml
+
 The repository contains Torch implementation to detect flooded water on the image based on well known EfficientNet and DenseNet architecture achieving at the selected pictures.
 
 ## Abstract

@@ -1,0 +1,33 @@
+name: ai4ci_cu11_v2
+channels:
+  - default
+  - pytorch
+  - nvidia
+dependencies:
+  - python=3.9
+  - numpy=1.20
+  - scipy=1.7.1
+  - cudatoolkit=11.1
+  - matplotlib=3.4.2
+  - pytorch:pytorch=1.10
+  - pytorch:torchvision
+  - pytorch:torchaudio
+  - scikit-image
+  - scikit-learn
+  - ipykernel
+  - pip    
+
+  - pip:
+    - Pillow==9.2
+    - tim==0.5
+    - timm==0.6.7
+    - tqdm
+    - pkgconfig
+    - libgtk2.0-dev
+    - ffmpeg
+    - tqdm==4.64
+    - opencv-python_headless
+    - torchsummary==1.5.1
+    - typing
+    - requests
+    - pandas==1.4.2    
