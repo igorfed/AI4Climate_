@@ -124,7 +124,7 @@ if __name__ == '__main__':
     model.load_state_dict(checkpoint['model_state_dict'])
     ###################
     output_paths = os.path.join(os.getcwd(), 'outputs')
-    output_images = os.path.join(output_paths, 'images')
+    output_images = os.path.join(output_paths, 'images_test_')
     check_if_dir_existed(output_images, True)
 
     dataset = CustomTestLoader(
@@ -158,9 +158,9 @@ if __name__ == '__main__':
     params = list(model.parameters())
     weight_softmax = params[-2].data.numpy()
     weight_softmax[weight_softmax<0] = 0
-    img_url = 'http://places.csail.mit.edu/demo/6.jpg'
-    os.system('wget %s -q -O test.jpg' % img_url)
-    img = Image.open('test.jpg')
+    #img_url = 'http://places.csail.mit.edu/demo/6.jpg'
+    #os.system('wget %s -q -O test.jpg' % img_url)
+    img = Image.open('12.jpg')
     tf = returnTF() # image transformer
     input_img = V(tf(img).unsqueeze(0))
     window_name = 'Test opencv '
@@ -186,8 +186,10 @@ if __name__ == '__main__':
             probs = probs.numpy()
             idx = idx.numpy()
             # output the IO prediction      
+            print(labels_IO[:10])
             io_image = np.mean(labels_IO[idx[:10]]) # vote for the indoor or outdoor
-            if io_image < 0.5:
+            
+            if io_image < 0.6:
                 indoor = True
                 print('--TYPE OF ENVIRONMENT: indoor')
             else:
@@ -197,8 +199,12 @@ if __name__ == '__main__':
             # output the prediction of scene category
             print('--SCENE CATEGORIES:')
             #for i in range(0, 5):
-            #    probs[i] = round(probs[i],2)
             #    print('{:.3f} -> {}'.format(probs[i], classes[idx[i]]))
+            # output the prediction of scene category
+            #print('--SCENE CATEGORIES:')
+            for i in range(0, 5):
+                probs[i] = round(probs[i],2)
+                print('{:.3f} -> {}'.format(probs[i], classes[idx[i]]))
 
             model.eval()
             #x, image_name, original_image = dataset[i]
@@ -211,8 +217,6 @@ if __name__ == '__main__':
         # generate class activation mapping
         #CAMs = places.returnCAM(places.features_blobs[0], weight_softmax, [idx[0]])
 
-        
-            
         pred_labels = torch.argmax(myprobs, 1)
         myprobs = myprobs.tolist()
         pred_labels = pred_labels.tolist()
@@ -246,10 +250,11 @@ if __name__ == '__main__':
         #cv2.putText(original_image, img_in_batch, (10,45), cv2.FONT_HERSHEY_SIMPLEX, 
         #           1, (255, 0, 0), 1, cv2.LINE_AA)
         if not indoor:
-            image_path = f"{output_images}/{image_name}_outdoor_{pred_labels}_{probability}.png"           
+            image_path = f"{output_images}/{pred_labels}_outdoor_{image_name}_{probability}.png"           
         else:
-            image_path = f"{output_images}/{image_name}_indoor_{0}_{io_image}.png"           
+            image_path = f"{output_images}/{0}_indoor_{image_name}_{io_image}.png"           
         #image_path = f"{output_images}/{image_name}_indoor.png"
+        print(f"image_path: {image_path}")
         cv2.imwrite(image_path, cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB))
 
         #print(i, image_path)
