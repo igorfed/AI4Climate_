@@ -5,7 +5,8 @@ model='efficientnet_b0'
 #model='densenet121'
 path='/media/igofed/SSD_2T/DATASETS/'
 #pth='/home/igofed/LiU/AI4Climate_version_updated/AI4Climate_/outputs/efficientnet_b0_weather_2_last_checkpoint.bin'
-pth='/home/igofed/LiU/AI4Climate_version_updated/AI4Climate_/outputs/efficientnet_b0_True_weather_2_last_checkpoint.bin'
+pth='efficientnet_b0_True_weather_5_best_checkpoint.bin'
+
 #pth='/home/igofed/LiU/AI4Climate_version_updated/AI4Climate_/outputs/densenet121_weather_2_last_checkpoint.bin'
 plot='True'
 

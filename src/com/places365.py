@@ -10,14 +10,9 @@ import wideresnet
 from com.common_packages import check_if_file_existed
 import cv2
 def load_labels(file_name_category):
-    # prepare all the labels
-    # file_name_category = 'categories_places365.txt'
-    # scene category relevant
-    #file_name_category = 'categories_places365.txt'
-    if not os.access(file_name_category, os.W_OK):
-        synset_url = 'https://raw.githubusercontent.com/csailvision/places365/master/categories_places365.txt'
-        os.system('wget ' + synset_url)
-    
+    '''
+    read txt labels from /classes
+    '''
     classes = list()
     check_if_file_existed(file_name_category)
     with open(file_name_category) as class_file:
@@ -28,34 +23,25 @@ def load_labels(file_name_category):
 
 def indoor_outdoor(file_name_IO):
     #file_name_IO = 'IO_places365.txt'
-    if not os.access(file_name_IO, os.W_OK):
-        synset_url = 'https://raw.githubusercontent.com/csailvision/places365/master/IO_places365.txt'
-        os.system('wget ' + synset_url)
-    check_if_file_existed(file_name_IO)
     with open(file_name_IO) as f:
         lines = f.readlines()
-        labels_IO = []
+        labels_IO, labels_F = [],[]
         for line in lines:
             items = line.rstrip().split()
-            labels_IO.append(int(items[-1]) -1) # 0 is indoor, 1 is outdoor
+            labels_IO.append(int(items[-2]) -1)
+            labels_F.append(int(items[-1]))
+
     labels_IO = np.array(labels_IO)
-    return labels_IO
+    labels_F = np.array(labels_F)
+    return labels_IO, labels_F
+
 
 def scene_attribute(file_name_attribute, file_name_W):
     # scene attribute relevant
     #file_name_attribute = 'labels_sunattribute.txt'
-    if not os.access(file_name_attribute, os.W_OK):
-        synset_url = 'https://raw.githubusercontent.com/csailvision/places365/master/labels_sunattribute.txt'
-        os.system('wget ' + synset_url)
-    check_if_file_existed(file_name_attribute)
     with open(file_name_attribute) as f:
         lines = f.readlines()
         labels_attribute = [item.rstrip() for item in lines]
-    #file_name_W = 'W_sceneattribute_wideresnet18.npy'
-    check_if_file_existed(file_name_W)
-    if not os.access(file_name_W, os.W_OK):
-        synset_url = 'http://places2.csail.mit.edu/models_places365/W_sceneattribute_wideresnet18.npy'
-        os.system('wget ' + synset_url)
     W_attribute = np.load(file_name_W)
     return labels_attribute, W_attribute
 
@@ -67,6 +53,7 @@ def recursion_change_bn(module):
         for i, (name, module1) in enumerate(module._modules.items()):
             module1 = recursion_change_bn(module1)
     return
+
 features_blobs = []
 def hook_feature(module, input, output):
     features_blobs.append(np.squeeze(output.data.cpu().numpy()))
@@ -75,10 +62,10 @@ def load_model(model_file):
     # this model has a last conv feature map as 14x14
 
     #model_file = 'wideresnet18_places365.pth.tar'
-    if not os.access(model_file, os.W_OK):
-        os.system('wget http://places2.csail.mit.edu/models_places365/' + model_file)
-        os.system('wget https://raw.githubusercontent.com/csailvision/places365/master/wideresnet.py')
-    check_if_file_existed(model_file)
+    #if not os.access(model_file, os.W_OK):
+    #    os.system('wget http://places2.csail.mit.edu/models_places365/' + model_file)
+    #    os.system('wget https://raw.githubusercontent.com/csailvision/places365/master/wideresnet.py')
+    #check_if_file_existed(model_file)
     import wideresnet
     model = wideresnet.resnet18(num_classes=365)
     checkpoint = torch.load(model_file, map_location=lambda storage, loc: storage)
@@ -89,26 +76,14 @@ def load_model(model_file):
     for i, (name, module) in enumerate(model._modules.items()):
         module = recursion_change_bn(model)
     model.avgpool = torch.nn.AvgPool2d(kernel_size=14, stride=1, padding=0)
-    
-    model.eval()
-
-
-
-    # the following is deprecated, everything is migrated to python36
-
-    ## if you encounter the UnicodeDecodeError when use python3 to load the model, add the following line will fix it. Thanks to @soravux
-    #from functools import partial
-    #import pickle
-    #pickle.load = partial(pickle.load, encoding="latin1")
-    #pickle.Unpickler = partial(pickle.Unpickler, encoding="latin1")
-    #model = torch.load(model_file, map_location=lambda storage, loc: storage, pickle_module=pickle)
 
     model.eval()
     # hook the feature extractor
     features_names = ['layer4','avgpool'] # this is the last conv layer of the resnet
     for name in features_names:
         model._modules.get(name).register_forward_hook(hook_feature)
-    return model
+    return model, features_blobs
+
 
 def returnCAM(feature_conv, weight_softmax, class_idx):
     # generate the class activation maps upsample to 256x256
